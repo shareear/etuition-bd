@@ -17,12 +17,19 @@ const Payment = () => {
     // ফিক্স: স্যালারিকে নম্বর হিসেবে কনভার্ট করা (যদি স্ট্রিং আসে তবে ক্লিন করা)
     const cleanSalary = salary ? parseFloat(salary.toString().replace(/[$,]/g, '')) : 0;
 
-    // যদি স্যালারি না থাকে বা ০ হয়, তবে পেমেন্ট পেজ দেখাবে না
-    if (!cleanSalary || cleanSalary <= 0) {
+    // টোকেন ভেরিফিকেশন চেক (সিকিউরিটি এডিশন)
+    const token = localStorage.getItem('access-token');
+
+    // যদি স্যালারি না থাকে বা ০ হয়, অথবা টোকেন না থাকে তবে পেমেন্ট পেজ দেখাবে না
+    if (!cleanSalary || cleanSalary <= 0 || !token) {
         return (
             <div className="p-20 text-center">
-                <h2 className="text-2xl font-black text-red-500 uppercase italic">Invalid Session</h2>
-                <p className="text-slate-500">Please go back to Applied Tutors and try again.</p>
+                <h2 className="text-2xl font-black text-red-500 uppercase italic">
+                    {!token ? "Authentication Required" : "Invalid Session"}
+                </h2>
+                <p className="text-slate-500">
+                    {!token ? "Please login to continue." : "Please go back to Applied Tutors and try again."}
+                </p>
             </div>
         );
     }
