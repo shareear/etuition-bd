@@ -154,6 +154,7 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
             <div className="p-5 border border-slate-200 rounded-2xl bg-slate-50">
                 <CardElement
                     options={{
+                        hidePostalCode: true, // This removes the ZIP code requirement
                         style: {
                             base: {
                                 fontSize: '16px',

@@ -12,7 +12,6 @@ const Profile = () => {
 
     useEffect(() => {
         if (user?.email) {
-            // লোকাল স্টোরেজ থেকে টোকেন সংগ্রহ
             const token = localStorage.getItem('access-token');
 
             axios.get(`http://localhost:3000/user-stats/${user.email}`, {
@@ -32,9 +31,8 @@ const Profile = () => {
         });
     };
 
-    if (!profileData) return <div className="flex justify-center p-20"><span className="loading loading-spinner loading-lg"></span></div>;
+    if (!profileData) return <div className="flex justify-center p-20"><span className="loading loading-spinner loading-lg text-orange-600"></span></div>;
 
-    // ব্যাকএন্ড থেকে আসা ডাটা স্ট্রাকচার অনুযায়ী ডিস্ট্রাকচারিং
     const { user: dbUser, stats } = profileData;
 
     return (
@@ -76,16 +74,16 @@ const Profile = () => {
                     <>
                         <StatCard label="Total Platform Users" value={stats?.totalUsers || 0} desc="Registered Accounts" />
                         <StatCard label="Active Tuition Posts" value={stats?.totalTuitions || 0} desc="Approved & Pending" />
-                        <StatCard label="Total Revenue" value={`$${stats?.earnings || 0}`} desc="Successful Transactions" />
+                        <StatCard label="Total Revenue" value={`$${stats?.earnings?.toLocaleString() || 0}`} desc="Successful Transactions" />
                     </>
                 )}
 
-                {/* Tutor View */}
+                {/* Tutor View - FIXED VALUES */}
                 {dbUser?.role === 'tutor' && (
                     <>
                         <StatCard label="Applied Jobs" value={stats?.applications || 0} desc="Total Applications Submitted" />
-                        <StatCard label="Ongoing Tuitions" value={0} desc="Currently Teaching" />
-                        <StatCard label="Total Earnings" value="$0" desc="Coming from Revenue History" />
+                        <StatCard label="Ongoing Tuitions" value={stats?.ongoingTuitions || 0} desc="Jobs with successful payment" />
+                        <StatCard label="Total Earnings" value={`$${stats?.totalEarnings?.toLocaleString() || 0}`} desc="Income from Revenue History" />
                     </>
                 )}
 

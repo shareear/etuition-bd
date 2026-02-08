@@ -18,6 +18,9 @@ const MyPosts = () => {
     }, [user]);
 
     const handleDelete = (id) => {
+        // --- ADDED JWT TOKEN FOR VERIFICATION ---
+        const token = localStorage.getItem('access-token');
+        
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -28,13 +31,17 @@ const MyPosts = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:3000/tuitions/${id}`)
-                    .then(res => {
-                        if (res.data.deletedCount > 0) {
-                            Swal.fire("Deleted!", "Your post has been deleted.", "success");
-                            setMyPosts(myPosts.filter(post => post._id !== id));
-                        }
-                    });
+                axios.delete(`http://localhost:3000/tuitions/${id}`, {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                })
+                .then(res => {
+                    if (res.data.deletedCount > 0) {
+                        Swal.fire("Deleted!", "Your post has been deleted.", "success");
+                        setMyPosts(myPosts.filter(post => post._id !== id));
+                    }
+                });
             }
         });
     };
@@ -55,7 +62,14 @@ const MyPosts = () => {
     };
 
     const handleUpdate = () => {
-        axios.patch(`http://localhost:3000/tuitions/${editingPost._id}`, formData)
+        // --- ADDED JWT TOKEN FOR VERIFICATION ---
+        const token = localStorage.getItem('access-token');
+
+        axios.patch(`http://localhost:3000/tuitions/${editingPost._id}`, formData, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
             .then(res => {
                 if (res.data.modifiedCount > 0) {
                     Swal.fire("Updated!", "Your post has been updated.", "success");

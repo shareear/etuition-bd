@@ -2,19 +2,25 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router'; 
-import { FaCreditCard, FaCheckCircle, FaClock } from 'react-icons/fa';
+import { FaCreditCard, FaCheckCircle, FaClock, FaUserCheck, FaTrashAlt } from 'react-icons/fa';
+import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const AppliedTutors = () => {
     const { user } = useAuth();
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const fetchApplications = () => {
         if (user?.email) {
-            axios.get(`http://localhost:3000/hiring-requests-by-student/${user.email}`)
+            const token = localStorage.getItem('access-token');
+            axios.get(`http://localhost:3000/hiring-requests-by-student/${user.email}`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
                 .then(res => {
                     setApplications(res.data);
-                    console.log("Fetched Application data", res.data);
                     setLoading(false);
                 })
                 .catch(err => {
@@ -22,7 +28,61 @@ const AppliedTutors = () => {
                     setLoading(false);
                 });
         }
+    };
+
+    useEffect(() => {
+        fetchApplications();
     }, [user]);
+
+    const handleApprove = async (id) => {
+        try {
+            const token = localStorage.getItem('access-token');
+            const res = await axios.patch(`http://localhost:3000/applications/status/${id}`, 
+                { status: 'approved' }, 
+                { headers: { authorization: `Bearer ${token}` } }
+            );
+
+            if (res.data.modifiedCount > 0) {
+                toast.success("Tutor Approved successfully!");
+                setApplications(applications.map(app => 
+                    app._id === id ? { ...app, status: 'approved' } : app
+                ));
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to approve tutor.");
+        }
+    };
+
+    // --- NEW DELETE FUNCTION ---
+    const handleDelete = async (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This application will be removed permanently!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#ea580c",
+            cancelButtonColor: "#1e293b",
+            confirmButtonText: "Yes, delete it!",
+            customClass: { popup: 'rounded-3xl' }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const token = localStorage.getItem('access-token');
+                    const res = await axios.delete(`http://localhost:3000/applications/${id}`, {
+                        headers: { authorization: `Bearer ${token}` }
+                    });
+
+                    if (res.data.deletedCount > 0) {
+                        toast.success("Application deleted.");
+                        setApplications(applications.filter(app => app._id !== id));
+                    }
+                } catch (err) {
+                    toast.error("Failed to delete application.");
+                }
+            }
+        });
+    };
 
     if (loading) return (
         <div className="flex justify-center items-center min-h-100">
@@ -65,9 +125,7 @@ const AppliedTutors = () => {
                                 </tr>
                             ) : (
                                 applications.map((app) => {
-                                    // SAFETY LOGIC: Convert string salary like "$1000" or "Negotiable" to number
-                                    const rawSalary = app.salary ? app.salary.toString().replace(/[$,]/g, '') : "0";
-                                    const numericSalary = parseFloat(rawSalary);
+                                    const numericSalary = parseFloat(app.salary) || 0;
 
                                     return (
                                         <tr key={app._id} className="hover:bg-slate-50/50 transition-colors border-b border-slate-50">
@@ -77,17 +135,17 @@ const AppliedTutors = () => {
                                             </td>
                                             <td>
                                                 <span className="font-black text-slate-600 uppercase italic text-sm">
-                                                    {app.subject || "Not Specified"}
+                                                    {app.subject}
                                                 </span>
                                             </td>
                                             <td>
                                                 <div className="font-bold text-slate-700">
-                                                    ${numericSalary}
+                                                    {app.salary} BDT
                                                 </div>
                                             </td>
                                             <td>
                                                 <span className={`badge badge-sm font-black uppercase text-[10px] px-3 py-3 border-none shadow-sm ${
-                                                    app.status === 'Approved' ? 'bg-amber-100 text-amber-700' : 
+                                                    app.status === 'approved' ? 'bg-amber-100 text-amber-700' : 
                                                     app.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 
                                                     'bg-slate-100 text-slate-500'
                                                 }`}>
@@ -95,31 +153,46 @@ const AppliedTutors = () => {
                                                 </span>
                                             </td>
                                             <td className="text-center">
-                                                {/* ACTION BUTTONS */}
-                                                {app.status === 'Approved' ? (
-                                                    <Link 
-                                                        to={`/dashboard/payment/${app._id}`}
-                                                        state={{ 
-                                                            salary: numericSalary, 
-                                                            tutorEmail: app.tutorEmail, 
-                                                            subject: app.subject || "Tuition Fee" 
-                                                        }}
-                                                        className="btn btn-sm bg-orange-600 hover:bg-orange-700 text-white border-none rounded-xl gap-2 shadow-md shadow-orange-100 px-4"
-                                                    >
-                                                        <FaCreditCard className="text-xs" />
-                                                        Pay Now
-                                                    </Link>
-                                                ) : app.status === 'paid' ? (
-                                                    <div className="flex items-center justify-center gap-1 text-emerald-600 font-black text-xs uppercase italic">
-                                                        <FaCheckCircle />
-                                                        Success
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex items-center justify-center gap-1 text-slate-400 font-bold text-[10px] uppercase italic">
-                                                        <FaClock />
-                                                        Pending
-                                                    </div>
-                                                )}
+                                                <div className="flex items-center justify-center gap-2">
+                                                    {app.status === 'approved' ? (
+                                                        <Link 
+                                                            to={`/dashboard/payment/${app._id}`}
+                                                            state={{ 
+                                                                salary: numericSalary, 
+                                                                tutorEmail: app.tutorEmail, 
+                                                                subject: app.subject 
+                                                            }}
+                                                            className="btn btn-sm bg-orange-600 hover:bg-orange-700 text-white border-none rounded-xl gap-2 shadow-md px-4 transition-all"
+                                                        >
+                                                            <FaCreditCard className="text-xs" />
+                                                            Pay Now
+                                                        </Link>
+                                                    ) : app.status === 'paid' ? (
+                                                        <div className="flex items-center justify-center gap-1 text-emerald-600 font-black text-xs uppercase italic">
+                                                            <FaCheckCircle />
+                                                            Success
+                                                        </div>
+                                                    ) : (
+                                                        <button 
+                                                            onClick={() => handleApprove(app._id)}
+                                                            className="btn btn-sm bg-slate-900 hover:bg-black text-white border-none rounded-xl gap-2 px-4 text-[10px] font-black uppercase italic transition-all"
+                                                        >
+                                                            <FaUserCheck className="text-xs text-orange-500" />
+                                                            Approve
+                                                        </button>
+                                                    )}
+                                                    
+                                                    {/* Delete Button - Hidden if already paid */}
+                                                    {app.status !== 'paid' && (
+                                                        <button 
+                                                            onClick={() => handleDelete(app._id)}
+                                                            className="btn btn-sm btn-square bg-red-50 hover:bg-red-100 text-red-600 border-none rounded-xl transition-all"
+                                                            title="Delete Request"
+                                                        >
+                                                            <FaTrashAlt />
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     );
@@ -129,9 +202,6 @@ const AppliedTutors = () => {
                     </table>
                 </div>
             </div>
-            <p className="mt-6 text-slate-400 text-xs text-center font-medium">
-                * If salary is "Negotiable", please contact the tutor to fix a price before payment.
-            </p>
         </div>
     );
 };

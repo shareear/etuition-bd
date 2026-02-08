@@ -8,19 +8,19 @@ const RevenueHistory = () => {
     const [payments, setPayments] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // ডাটা ফেচ করার ফাংশনটি useCallback দিয়ে র‍্যাপ করা হয়েছে যাতে এটি অপ্রয়োজনে বারবার তৈরি না হয়
     const fetchRevenueData = useCallback(() => {
         if (user?.email) {
-            const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+            const token = localStorage.getItem('access-token');
             
+            // API call to the new tutor-revenue endpoint
             axios.get(`http://localhost:3000/tutor-revenue/${user?.email}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
             })
                 .then(res => {
-                    // ফিক্স: ব্যাক-এন্ড থেকে আসা অবজেক্টের ভেতর থেকে পেমেন্ট অ্যারেটি নেওয়া হয়েছে
-                    setPayments(res.data.payments || []);
+                    // FIX: Direct array assignment because the backend sends [{}, {}]
+                    setPayments(Array.isArray(res.data) ? res.data : []);
                     setLoading(false);
                 })
                 .catch(err => {
@@ -34,12 +34,11 @@ const RevenueHistory = () => {
         fetchRevenueData();
     }, [fetchRevenueData]);
 
-    // মোট আয় ক্যালকুলেশন (ফিক্স: payments অ্যারে কি না তা নিশ্চিত করা হয়েছে)
     const totalEarnings = Array.isArray(payments) 
         ? payments.reduce((sum, payment) => sum + parseFloat(payment.salary || 0), 0) 
         : 0;
 
-    if (loading) return <div className="text-center p-20"><span className="loading loading-spinner loading-lg text-primary"></span></div>;
+    if (loading) return <div className="text-center p-20"><span className="loading loading-spinner loading-lg text-orange-600"></span></div>;
 
     return (
         <div className="p-4 lg:p-8">
@@ -49,7 +48,7 @@ const RevenueHistory = () => {
             </header>
 
             {/* Total Earnings Card */}
-            <div className="bg-linear-to-r from-orange-500 to-orange-600 rounded-4xl p-8 lg:p-12 text-white mb-10 shadow-xl relative overflow-hidden">
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-4xl p-8 lg:p-12 text-white mb-10 shadow-xl relative overflow-hidden">
                 <div className="relative z-10">
                     <p className="uppercase text-xs font-black tracking-[4px] opacity-80 mb-2">Net Income</p>
                     <h1 className="text-5xl lg:text-7xl font-black italic flex items-center">
@@ -60,7 +59,6 @@ const RevenueHistory = () => {
                         Total {payments.length} Transactions
                     </p>
                 </div>
-                {/* Decorative Icon */}
                 <FaFileInvoiceDollar className="absolute -bottom-5 -right-5 text-[12rem] opacity-10 rotate-12" />
             </div>
 
@@ -93,11 +91,11 @@ const RevenueHistory = () => {
                                         <td className="text-slate-600 font-medium">
                                             <div className="flex items-center gap-2">
                                                 <FaRegCalendarAlt className="text-slate-300" />
-                                                {new Date(p.date).toLocaleDateString()}
+                                                {p.date ? new Date(p.date).toLocaleDateString() : 'N/A'}
                                             </div>
                                         </td>
                                         <td>
-                                            <div className="font-black text-slate-700 uppercase">{p.subject}</div>
+                                            <div className="font-black text-slate-700 uppercase italic">{p.subject || "Tuition Service"}</div>
                                         </td>
                                         <td>
                                             <code className="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500">{p.transactionId}</code>
