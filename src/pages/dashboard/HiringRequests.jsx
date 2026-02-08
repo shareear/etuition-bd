@@ -26,7 +26,7 @@ const HiringRequests = () => {
                 setRequests(requests.map(req => req._id === id ? { ...req, status: newStatus } : req));
             }
         } catch (error) {
-            toast.error("Failed to update status", error.message);
+            toast.error("Failed to update status", error);
         }
     };
 

@@ -56,31 +56,33 @@ export const router = createBrowserRouter([
             { path: "register", Component: Register },
         ]
     },
+// ... অন্যান্য ইমপোর্ট ঠিক থাকবে
+
 {
     path: "dashboard",
-    element: <PrivateRoutes><Dashboard /></PrivateRoutes>,
+    element: <PrivateRoutes><Dashboard/></PrivateRoutes>,
     children: [
-        { index: true, element: <Profile /> },
+        { index: true, element: <Profile /> }, 
         { path: "profile", element: <Profile /> },
-
+        
         // Student Routes
-        { path: "post-tuition", element: <PrivateRoutes allowedRoles={["student"]}><PostTuitions /></PrivateRoutes> },
-        { path: "my-posts", element: <PrivateRoutes allowedRoles={["student"]}><MyPosts /></PrivateRoutes> },
-        { path: "applied-tutors", element: <PrivateRoutes allowedRoles={["student"]}><AppliedTutors /></PrivateRoutes> },
-
-        // Payment Route
-        { path: "payment/:id", element: <PrivateRoutes allowedRoles={["student"]}><Payment /></PrivateRoutes> },
+        { path: "post-tuition", element: <PostTuitions /> },
+        { path: "my-posts", element: <MyPosts /> },
+        { path: "applied-tutors", element: <AppliedTutors/>},
+        
+        // ফিক্সড পেমেন্ট রাউট: আইডি এবং ডাইনামিক প্যারামিটার সাপোর্ট করার জন্য
+        { path: "payment/:id", element: <Payment /> }, 
 
         // Admin Routes
-        { path: "manage-users", element: <PrivateRoutes allowedRoles={["admin"]}><Manageusers /></PrivateRoutes> },
-        { path: "manage-tuitions", element: <PrivateRoutes allowedRoles={["admin"]}><ManageTuitions /></PrivateRoutes> },
-        { path: "analytics", element: <PrivateRoutes allowedRoles={["admin"]}><AdminAnalytics /></PrivateRoutes> },
+        { path: "manage-users", element: <Manageusers /> },
+        { path: "manage-tuitions", element: <ManageTuitions /> },
+        { path: "analytics", element: <AdminAnalytics /> },
 
         // Tutor Routes
-        { path: "my-applications", element: <PrivateRoutes allowedRoles={["tutor"]}><MyApplications /></PrivateRoutes> },
-        { path: "ongoing-tuitions", element: <PrivateRoutes allowedRoles={["tutor"]}><OngoingTuitions /></PrivateRoutes> },
-        { path: "revenue", element: <PrivateRoutes allowedRoles={["tutor"]}><RevenueHistory /></PrivateRoutes> },
-        { path: "hiringrequest", element: <PrivateRoutes allowedRoles={["tutor"]}><HiringRequests /></PrivateRoutes> }
+        { path: "my-applications", element: <MyApplications /> },
+        { path: "ongoing-tuitions", element: <OngoingTuitions /> },
+        { path: "revenue", element: <RevenueHistory /> },
+        { path: "hiringrequest", element: <HiringRequests/>}
     ]
 }
 ]);

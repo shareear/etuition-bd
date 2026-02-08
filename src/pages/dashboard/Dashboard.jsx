@@ -12,7 +12,10 @@ const DashboardLayout = () => {
     useEffect(() => {
         if (user?.email) {
             axios.get(`http://localhost:3000/users/role/${user.email}`)
-                .then(res => setRole(res.data.role));
+                .then(res => {
+                    setRole(res.data.role);
+                    console.log('Fetched role:', res.data.role); // Debug log
+                });
         }
     }, [user]);
 
@@ -55,14 +58,30 @@ const DashboardLayout = () => {
                         </>
                     )}
 
-                    {/* Tutor Menu (আপনার রিকোয়ারমেন্ট অনুযায়ী নতুন মেনু) */}
+                    {/* Tutor Menu */}
                     {role === 'tutor' && (
                         <>
                             <p className="text-[10px] text-slate-500 uppercase font-black px-3 mb-2 tracking-widest">Tutor Portal</p>
-                            <li><NavLink to="/dashboard/my-applications" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaHistory /> My Applications</NavLink></li>
-                            <li><NavLink to="/dashboard/hiringrequest" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaHistory />Hiring Requests</NavLink></li>
-                            <li><NavLink to="/dashboard/ongoing-tuitions" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaChalkboardTeacher /> Ongoing Tuitions</NavLink></li>
-                            <li><NavLink to="/dashboard/revenue" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaDollarSign /> Revenue History</NavLink></li>
+                            <li title="View your applications">
+                                <NavLink to="/dashboard/my-applications" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}>
+                                    <FaHistory /> My Applications
+                                </NavLink>
+                            </li>
+                            <li title="Manage hiring requests">
+                                <NavLink to="/dashboard/hiringrequest" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}>
+                                    <FaHistory /> Hiring Requests
+                                </NavLink>
+                            </li>
+                            <li title="Track ongoing tuitions">
+                                <NavLink to="/dashboard/ongoing-tuitions" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}>
+                                    <FaChalkboardTeacher /> Ongoing Tuitions
+                                </NavLink>
+                            </li>
+                            <li title="View revenue history">
+                                <NavLink to="/dashboard/revenue" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}>
+                                    <FaDollarSign /> Revenue History
+                                </NavLink>
+                            </li>
                         </>
                     )}
 

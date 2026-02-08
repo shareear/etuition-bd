@@ -15,28 +15,29 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
     const [cardError, setCardError] = useState("");
 
     useEffect(() => {
-        // CLEANUP ONLY: Convert salary to number so the API request works
+        // ফিক্স: স্যালারি থেকে যেকোনো নন-নিউমেরিক ক্যারেক্টার ($ বা কমা) সরিয়ে শুধু নম্বর নেওয়া
         const cleanSalary = salary ? salary.toString().replace(/[$,]/g, '') : "0";
         const amount = parseFloat(cleanSalary);
 
+        // স্ট্রিক্ট চেক: যদি স্যালারি ভ্যালিড নম্বর হয় তবেই ব্যাকএন্ডে রিকোয়েস্ট যাবে
         if (!isNaN(amount) && amount > 0) {
             axios.post("http://localhost:3000/create-payment-intent", { salary: amount })
                 .then(res => {
-                    console.log("Client Secret Received:", res.data.clientSecret);
                     setClientSecret(res.data.clientSecret);
                 })
                 .catch(err => {
-                    console.error("Payment intent error:", err);
+                    console.error("Backend Error:", err.response?.data || err.message);
+                    setCardError("Failed to initialize payment. Please try again.");
                 });
+        } else {
+            setCardError("Invalid payment amount detected.");
         }
     }, [salary]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!stripe || !elements || !clientSecret || processing) {
-            return;
-        }
+        if (!stripe || !elements || !clientSecret || processing) return;
 
         setProcessing(true);
         const card = elements.getElement(CardElement);
@@ -68,14 +69,14 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
         } else {
             setCardError("");
             if (paymentIntent.status === "succeeded") {
-                // CLEANUP ONLY: Convert salary back to number for DB entry
-                const finalNumericSalary = parseFloat(salary.toString().replace(/[$,]/g, '')) || 0;
+                // পেমেন্ট সফল হওয়ার পর ডেটাবেজে পাঠানোর জন্য স্যালারি পুনরায় ক্লিন করা
+                const finalSalary = parseFloat(salary.toString().replace(/[$,]/g, '')) || 0;
 
                 const paymentInfo = {
                     transactionId: paymentIntent.id,
                     studentEmail: user.email,
                     tutorEmail,
-                    salary: finalNumericSalary,
+                    salary: finalSalary,
                     appId,
                     status: "paid",
                     date: new Date()
@@ -90,9 +91,7 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
                             text: `Transaction ID: ${paymentIntent.id}`,
                             confirmButtonColor: '#ea580c',
                             background: '#fff',
-                            customClass: {
-                                popup: 'rounded-3xl'
-                            }
+                            customClass: { popup: 'rounded-3xl' }
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 navigate('/dashboard/applied-tutors');
@@ -121,7 +120,9 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
                             invalid: { color: '#ef4444' },
                         },
                     }}
-                    onChange={() => setCardError("")} // Restored to your original style
+                    onChange={(e) => {
+                        setCardError(e.error ? e.error.message : "");
+                    }}
                 />
             </div>
             
