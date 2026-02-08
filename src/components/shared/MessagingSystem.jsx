@@ -1,0 +1,66 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const MessagingSystem = ({ tutorId, studentId }) => {
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+
+    useEffect(() => {
+        const fetchMessages = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/messages?tutorId=${tutorId}&studentId=${studentId}`);
+                setMessages(response.data);
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
+        };
+
+        fetchMessages();
+    }, [tutorId, studentId]);
+
+    const handleSendMessage = async () => {
+        try {
+            const response = await axios.post('http://localhost:3000/send-message', {
+                tutorId,
+                studentId,
+                message: newMessage,
+            });
+            if (response.status === 200) {
+                setMessages([...messages, response.data]);
+                setNewMessage('');
+            }
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    };
+
+    return (
+        <div className="p-4 border rounded-lg">
+            <div className="h-64 overflow-y-auto border-b mb-4">
+                {messages.map((msg, index) => (
+                    <div key={index} className="p-2 border-b">
+                        <p className="font-bold">{msg.sender}:</p>
+                        <p>{msg.text}</p>
+                    </div>
+                ))}
+            </div>
+            <div className="flex items-center gap-2">
+                <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    className="input input-bordered flex-1"
+                    placeholder="Type your message..."
+                />
+                <button
+                    onClick={handleSendMessage}
+                    className="btn btn-primary text-white font-bold uppercase"
+                >
+                    Send
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default MessagingSystem;
