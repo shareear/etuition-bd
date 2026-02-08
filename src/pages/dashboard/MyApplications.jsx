@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
-import { FaTrashAlt, FaClock, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaTrashAlt, FaClock, FaCheckCircle, FaTimesCircle, FaEdit } from 'react-icons/fa';
 
 const MyApplications = () => {
     const { user } = useAuth();
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [editingApplication, setEditingApplication] = useState(null);
+    const [formData, setFormData] = useState({ qualifications: '', experience: '', expectedSalary: '' });
 
-    const fetchApplications = async () => {
+    const fetchApplications = useCallback(async () => {
         try {
             setLoading(true);
             const res = await axios.get(`http://localhost:3000/hiring-requests/${user?.email}`);
@@ -20,11 +22,11 @@ const MyApplications = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [user?.email]);
 
     useEffect(() => {
         if (user?.email) fetchApplications();
-    }, [user]);
+    }, [user?.email, fetchApplications]);
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to withdraw this application?")) {
@@ -38,6 +40,31 @@ const MyApplications = () => {
                 toast.error("Delete failed", error.message);
             }
         }
+    };
+
+    const handleEdit = (application) => {
+        setEditingApplication(application);
+        setFormData({
+            qualifications: application.qualifications,
+            experience: application.experience,
+            expectedSalary: application.expectedSalary
+        });
+    };
+
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleUpdate = () => {
+        axios.patch(`http://localhost:3000/hiring-requests/${editingApplication._id}`, formData)
+            .then(res => {
+                if (res.data.modifiedCount > 0) {
+                    toast.success("Application updated successfully");
+                    setApplications(applications.map(app => app._id === editingApplication._id ? { ...app, ...formData } : app));
+                    setEditingApplication(null);
+                }
+            });
     };
 
     if (loading) return <div className="text-center p-20"><span className="loading loading-spinner loading-lg text-orange-600"></span></div>;
@@ -91,9 +118,14 @@ const MyApplications = () => {
                                     </td>
                                     <td>
                                         {app.status === 'Pending' ? (
-                                            <button onClick={() => handleDelete(app._id)} className="btn btn-ghost btn-xs text-red-500 hover:bg-red-50">
-                                                <FaTrashAlt />
-                                            </button>
+                                            <div className="flex items-center">
+                                                <button onClick={() => handleEdit(app)} className="btn btn-sm btn-warning mr-2">
+                                                    <FaEdit />
+                                                </button>
+                                                <button onClick={() => handleDelete(app._id)} className="btn btn-sm btn-danger">
+                                                    <FaTrashAlt />
+                                                </button>
+                                            </div>
                                         ) : (
                                             <span className="text-[10px] font-bold text-slate-300 uppercase italic">Locked</span>
                                         )}
@@ -102,6 +134,44 @@ const MyApplications = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {editingApplication && (
+                <div className="mt-6">
+                    <h3 className="text-xl font-bold mb-4">Edit Application</h3>
+                    <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input
+                                type="text"
+                                name="qualifications"
+                                value={formData.qualifications}
+                                onChange={handleFormChange}
+                                placeholder="Qualifications"
+                                className="input input-bordered"
+                            />
+                            <input
+                                type="text"
+                                name="experience"
+                                value={formData.experience}
+                                onChange={handleFormChange}
+                                placeholder="Experience"
+                                className="input input-bordered"
+                            />
+                            <input
+                                type="text"
+                                name="expectedSalary"
+                                value={formData.expectedSalary}
+                                onChange={handleFormChange}
+                                placeholder="Expected Salary"
+                                className="input input-bordered"
+                            />
+                        </div>
+                        <div className="mt-4">
+                            <button type="submit" className="btn btn-primary mr-2">Update</button>
+                            <button onClick={() => setEditingApplication(null)} className="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             )}
         </div>

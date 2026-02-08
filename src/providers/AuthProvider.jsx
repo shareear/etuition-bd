@@ -43,16 +43,19 @@ const AuthProvider = ({children}) => {
             setUser(currentUser);
             setLoading(false);
 
-            // if(currentUser){
-            //     const token = await currentUser.getIdToken(token);
-            //     localStorage.setItem('e-tuition-token', token);
-            //     setLoading(false);
-            // }else{
-            //     localStorage.removeItem('e-tuition-token');
-            // }
-            
-            return () => unsubcribe();
+            if (currentUser) {
+                try {
+                    const token = await currentUser.getIdToken();
+                    localStorage.setItem('e-tuition-token', token);
+                } catch (error) {
+                    console.error('Error retrieving JWT token:', error);
+                }
+            } else {
+                localStorage.removeItem('e-tuition-token');
+            }
         });
+
+        return () => unsubcribe();
     }, []);
 
 
