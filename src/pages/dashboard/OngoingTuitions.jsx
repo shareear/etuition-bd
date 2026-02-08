@@ -26,7 +26,7 @@ const OngoingTuitions = () => {
 
     useEffect(() => {
         fetchOngoingJobs();
-    }, [user]);
+    }, [user, fetchOngoingJobs]); // Added 'fetchOngoingJobs' to dependency array
 
     // SweetAlert2 দিয়ে জব ক্যানসেল করার ফাংশন
     const handleCancelJob = (id) => {
@@ -58,12 +58,12 @@ const OngoingTuitions = () => {
                             timer: 2000,
                             showConfirmButton: false
                         });
-                        
+
                         setOngoingJobs(ongoingJobs.filter(job => job._id !== id));
                         setSelectedJob(null);
                         document.getElementById('job_modal').close();
                     }
-                } catch (err) {
+                } catch {
                     // Error Message
                     Swal.fire({
                         title: "Error!",
