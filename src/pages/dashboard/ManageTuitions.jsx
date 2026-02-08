@@ -5,15 +5,21 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 import useAuth from '../../hooks/useAuth';
 
 const ManageTuitions = () => {
-    const { loading } = useAuth(); // চেক করবে ইউজার লগইন অবস্থায় আছে কি না
+    const { loading } = useAuth(); // চেক করবে ইউজার লগইন অবস্থায় আছে কি না
     const [pendingTuitions, setPendingTuitions] = useState([]);
     const [isDataLoading, setIsDataLoading] = useState(true);
 
-    // ১. সার্ভার থেকে পেন্ডিং টিউটোরিয়ালগুলো নিয়ে আসার ফাংশন
+    // ১. সার্ভার থেকে পেন্ডিং টিউটোরিয়ালগুলো নিয়ে আসার ফাংশন
     const fetchPendingTuitions = async () => {
         try {
             setIsDataLoading(true);
-            const res = await axios.get('http://localhost:3000/admin/pending-tuitions');
+            const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+
+            const res = await axios.get('http://localhost:3000/admin/pending-tuitions', {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
             setPendingTuitions(res.data);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -23,7 +29,7 @@ const ManageTuitions = () => {
         }
     };
 
-    // ২. পেজ লোড হওয়ার সময় ডাটা ফেচ করা
+    // ২. পেজ লোড হওয়ার সময় ডাটা ফেচ করা
     useEffect(() => {
         if (!loading) {
             fetchPendingTuitions();
@@ -33,16 +39,27 @@ const ManageTuitions = () => {
     // ৩. স্ট্যাটাস আপডেট (Approve বা Reject) করার ফাংশন
     const handleStatusUpdate = async (id, newStatus) => {
         try {
-            const res = await axios.patch(`http://localhost:3000/tuitions/status/${id}`, { status: newStatus });
+            const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+
+            const res = await axios.patch(`http://localhost:3000/tuitions/status/${id}`, 
+                { status: newStatus },
+                {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            
             if (res.data.modifiedCount > 0) {
                 toast.success(`Post has been ${newStatus}!`);
                 
-                // টেবিল থেকে ওই আইটেমটি রিমুভ করে দেওয়া যাতে পেজ রিফ্রেশ করতে না হয়
+                // টেবিল থেকে ওই আইটেমটি রিমুভ করে দেওয়া যাতে পেজ রিফ্রেশ করতে না হয়
                 const remaining = pendingTuitions.filter(tuition => tuition._id !== id);
                 setPendingTuitions(remaining);
             }
         } catch (error) {
-            toast.error("Something went wrong while updating status", error.message);
+            toast.error("Something went wrong while updating status");
+            console.error(error.message);
         }
     };
 
