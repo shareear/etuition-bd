@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import { FaDollarSign, FaFileInvoiceDollar, FaRegCalendarAlt } from 'react-icons/fa';
@@ -8,22 +8,33 @@ const RevenueHistory = () => {
     const [payments, setPayments] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    // ডাটা ফেচ করার ফাংশনটি useCallback দিয়ে র‍্যাপ করা হয়েছে যাতে এটি অপ্রয়োজনে বারবার তৈরি না হয়
+    const fetchRevenueData = useCallback(() => {
         if (user?.email) {
-            axios.get(`http://localhost:3000/tutor-revenue/${user?.email}`)
+            const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+            
+            axios.get(`http://localhost:3000/tutor-revenue/${user?.email}`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
                 .then(res => {
-                    // ফিক্স: ব্যাক-এন্ড থেকে আসা অবজেক্টের ভেতর থেকে পেমেন্ট অ্যারেটি নেওয়া হয়েছে
+                    // ফিক্স: ব্যাক-এন্ড থেকে আসা অবজেক্টের ভেতর থেকে পেমেন্ট অ্যারেটি নেওয়া হয়েছে
                     setPayments(res.data.payments || []);
                     setLoading(false);
                 })
                 .catch(err => {
-                    console.error(err);
+                    console.error("Error fetching revenue:", err);
                     setLoading(false);
                 });
         }
-    }, [user]);
+    }, [user?.email]);
 
-    // মোট আয় ক্যালকুলেশন (ফিক্স: payments অ্যারে কি না তা নিশ্চিত করা হয়েছে)
+    useEffect(() => {
+        fetchRevenueData();
+    }, [fetchRevenueData]);
+
+    // মোট আয় ক্যালকুলেশন (ফিক্স: payments অ্যারে কি না তা নিশ্চিত করা হয়েছে)
     const totalEarnings = Array.isArray(payments) 
         ? payments.reduce((sum, payment) => sum + parseFloat(payment.salary || 0), 0) 
         : 0;
