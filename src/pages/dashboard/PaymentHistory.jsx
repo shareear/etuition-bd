@@ -23,7 +23,7 @@ const ExpenseHistory = () => {
                 setLoading(false);
             });
         }
-    }, [user?.email]);
+    }, [user]);
 
     useEffect(() => {
         fetchExpenseData();

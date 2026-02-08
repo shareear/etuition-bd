@@ -54,6 +54,7 @@ const DashboardLayout = () => {
                             <p className="text-[10px] text-slate-500 uppercase font-black px-3 mb-2 tracking-widest">Student Portal</p>
                             <li><NavLink to="/dashboard/post-tuition" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaPlusCircle /> Post Tuition</NavLink></li>
                             <li><NavLink to="/dashboard/my-posts" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaBook /> My Tuitions</NavLink></li>
+                            <li><NavLink to="/dashboard/ongoing-tuitions" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaBook />Ongoing Tuitions</NavLink></li>
                             <li><NavLink to="/dashboard/applied-tutors" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaUsers /> Applied Tutors</NavLink></li>
                             <li><NavLink to="/dashboard/payment-history" className={({isActive}) => `flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaUsers /> Payment History</NavLink></li>
                         </>
