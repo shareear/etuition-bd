@@ -9,14 +9,21 @@ const ManageUsers = () => {
     const [users, setUsers] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
 
-    // সব ইউজারদের নিয়ে আসার ফাংশন
+    // সব ইউজারদের নিয়ে আসার ফাংশন
     const fetchUsers = async () => {
         try {
             setIsFetching(true);
-            const res = await axios.get('http://localhost:3000/users');
+            const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+
+            const res = await axios.get('http://localhost:3000/users', {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
             setUsers(res.data);
         } catch (error) {
-            toast.error("Failed to load users", error.message);
+            toast.error("Failed to load users");
+            console.error(error.message);
         } finally {
             setIsFetching(false);
         }
@@ -29,14 +36,25 @@ const ManageUsers = () => {
     // ইউজারের রোল আপডেট করার ফাংশন
     const handleMakeRole = async (id, newRole) => {
         try {
-            const res = await axios.patch(`http://localhost:3000/users/role/${id}`, { role: newRole });
+            const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+
+            const res = await axios.patch(`http://localhost:3000/users/role/${id}`, 
+                { role: newRole },
+                {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             if (res.data.modifiedCount > 0) {
                 toast.success(`User is now a ${newRole}!`);
-                // লোকাল স্টেট আপডেট করা যাতে পেজ রিফ্রেশ ছাড়াই রোল পরিবর্তন দেখা যায়
+                // লোকাল স্টেট আপডেট করা যাতে পেজ রিফ্রেশ ছাড়াই রোল পরিবর্তন দেখা যায়
                 setUsers(users.map(user => user._id === id ? { ...user, role: newRole } : user));
             }
         } catch (error) {
-            toast.error("Update failed", error.message);
+            toast.error("Update failed");
+            console.error(error.message);
         }
     };
 
@@ -44,13 +62,21 @@ const ManageUsers = () => {
     const handleDeleteUser = async (id) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
-                const res = await axios.delete(`http://localhost:3000/users/${id}`);
+                const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+
+                const res = await axios.delete(`http://localhost:3000/users/${id}`, {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                });
+
                 if (res.data.deletedCount > 0) {
                     toast.success("User deleted successfully");
                     setUsers(users.filter(user => user._id !== id));
                 }
             } catch (error) {
-                toast.error("Delete failed", error.message);
+                toast.error("Delete failed");
+                console.error(error.message);
             }
         }
     };
