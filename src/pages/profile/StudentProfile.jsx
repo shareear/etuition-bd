@@ -28,16 +28,16 @@ const StudentProfile = () => {
     if (!student) return <div className="text-center py-20">Student not found.</div>;
 
     return (
-        <div className="p-6">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-4">{student.name}</h2>
-                <p>Email: {student.email}</p>
-                <p>Location: {student.location || 'Not specified'}</p>
-                <p>Subjects: {student.subjects?.join(', ') || 'Not specified'}</p>
+        <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto">
+                <h2 className="text-3xl font-bold mb-4 text-center">{student.name}</h2>
+                <p className="text-lg">Email: {student.email}</p>
+                <p className="text-lg">Location: {student.location || 'Not specified'}</p>
+                <p className="text-lg">Subjects: {student.subjects?.join(', ') || 'Not specified'}</p>
             </div>
 
-            <div className="mt-6">
-                <h3 className="text-xl font-bold mb-4">Message {student.name}</h3>
+            <div className="mt-8 max-w-3xl mx-auto">
+                <h3 className="text-2xl font-bold mb-4 text-center">Message {student.name}</h3>
                 <MessagingSystem tutorId={null} studentId={studentId} />
             </div>
         </div>
