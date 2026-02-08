@@ -31,7 +31,7 @@ const Payment = () => {
         <div className="p-8 max-w-xl mx-auto">
             <header className="mb-10 text-center">
                 <h2 className="text-4xl font-black text-slate-800 uppercase italic tracking-tighter">Checkout</h2>
-                <div className="mt-4 p-6 bg-orange-50 border border-orange-100 rounded-[2rem] shadow-sm">
+                <div className="mt-4 p-6 bg-orange-50 border border-orange-100 rounded-4xl shadow-sm">
                     <p className="text-slate-500 uppercase text-[10px] font-bold tracking-widest mb-1">
                         Tuition Fee for {subject || "Selected Course"}
                     </p>

@@ -30,7 +30,9 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
                     setCardError("Failed to initialize payment. Please try again.");
                 });
         } else {
-            setCardError("Invalid payment amount detected.");
+            setTimeout(() => {
+                setCardError("Invalid payment amount detected.");
+            }, 0);
         }
     }, [salary]);
 
