@@ -39,8 +39,17 @@ const Register = () => {
 
                 axios.post('http://localhost:3000/users', userInfo)
                     .then(() =>{
-                        toast.success("Welcome! Registration Successful.", { id: toastId });
-                        navigate(location?.state || "/");
+                        // --- JWT Generation Start ---
+                        const loggedUser = { email: user?.email };
+                        axios.post('http://localhost:3000/jwt', loggedUser)
+                            .then(res => {
+                                if (res.data.token) {
+                                    localStorage.setItem('access-token', res.data.token);
+                                    toast.success("Welcome! Registration Successful.", { id: toastId });
+                                    navigate(location?.state || "/");
+                                }
+                            });
+                        // --- JWT Generation End ---
                     })
                     .catch(err =>{
                         console.log(err.message);
@@ -87,10 +96,19 @@ const Register = () => {
                                     createdAt: new Date().toISOString()
                                 };
                                 axios.post('http://localhost:3000/users', userInfo)
-                                    .then(data =>{
-                                        if(data.data.insertedId){
-                                            toast.success(`Registered as ${userType}`)
-                                            navigate(location?.state || "/")
+                                    .then(dataResponse =>{
+                                        if(dataResponse.data.insertedId){
+                                            // --- JWT Generation Start ---
+                                            const loggedUser = { email: data.email };
+                                            axios.post('http://localhost:3000/jwt', loggedUser)
+                                                .then(resJwt => {
+                                                    if (resJwt.data.token) {
+                                                        localStorage.setItem('access-token', resJwt.data.token);
+                                                        toast.success(`Registered as ${userType}`, { id: toastId });
+                                                        navigate(location?.state || "/");
+                                                    }
+                                                });
+                                            // --- JWT Generation End ---
                                         }
                                     })
                                     .catch(err=>{
@@ -109,7 +127,7 @@ const Register = () => {
                         return
                     })
 
-                toast.success(`Success! Registered as ${userType}`, { id: toastId });
+                // toast.success(`Success! Registered as ${userType}`, { id: toastId });
                 // navigate('/');
             })
             .catch((error) => {
