@@ -15,13 +15,19 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
     const [cardError, setCardError] = useState("");
 
     useEffect(() => {
-        // ফিক্স: স্যালারি থেকে যেকোনো নন-নিউমেরিক ক্যারেক্টার ($ বা কমা) সরিয়ে শুধু নম্বর নেওয়া
+        // ফিক্স: স্যালারি থেকে যেকোনো নন-নিউমেরিক ক্যারেক্টার ($ বা কমা) সরিয়ে শুধু নম্বর নেওয়া
         const cleanSalary = salary ? salary.toString().replace(/[$,]/g, '') : "0";
         const amount = parseFloat(cleanSalary);
 
-        // স্ট্রিক্ট চেক: যদি স্যালারি ভ্যালিড নম্বর হয় তবেই ব্যাকএন্ডে রিকোয়েস্ট যাবে
+        // স্ট্রিক্ট চেক: যদি স্যালারি ভ্যালিড নম্বর হয় তবেই ব্যাকএন্ডে রিকোয়েস্ট যাবে
         if (!isNaN(amount) && amount > 0) {
-            axios.post("http://localhost:3000/create-payment-intent", { salary: amount })
+            // Authorization Header ফিক্স
+            const token = localStorage.getItem('access-token');
+
+            axios.post("http://localhost:3000/create-payment-intent", 
+                { salary: amount },
+                { headers: { authorization: `Bearer ${token}` } }
+            )
                 .then(res => {
                     setClientSecret(res.data.clientSecret);
                 })
@@ -71,7 +77,7 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
         } else {
             setCardError("");
             if (paymentIntent.status === "succeeded") {
-                // পেমেন্ট সফল হওয়ার পর ডেটাবেজে পাঠানোর জন্য স্যালারি পুনরায় ক্লিন করা
+                // পেমেন্ট সফল হওয়ার পর ডেটাবেজে পাঠানোর জন্য স্যালারি পুনরায় ক্লিন করা
                 const finalSalary = parseFloat(salary.toString().replace(/[$,]/g, '')) || 0;
 
                 const paymentInfo = {
@@ -85,7 +91,13 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
                 };
 
                 try {
-                    const res = await axios.post("http://localhost:3000/payments", paymentInfo);
+                    // পেমেন্ট সেভ করার সময়ও Authorization Header প্রয়োজন
+                    const token = localStorage.getItem('access-token');
+                    const res = await axios.post("http://localhost:3000/payments", 
+                        paymentInfo,
+                        { headers: { authorization: `Bearer ${token}` } }
+                    );
+
                     if (res.data.paymentResult.insertedId) {
                         Swal.fire({
                             icon: 'success',
