@@ -31,7 +31,7 @@ const DashboardLayout = () => {
                 <ul className="space-y-2">
                     {/* Common link for all logged in users */}
                     <li>
-                        <NavLink to="/home" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all text-slate-300">
+                        <NavLink to="/" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all text-slate-300">
                             <FaHome className="text-orange-500" /> Back to Home
                         </NavLink>
                     </li>
