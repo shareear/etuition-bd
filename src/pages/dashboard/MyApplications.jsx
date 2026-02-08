@@ -14,7 +14,13 @@ const MyApplications = () => {
     const fetchApplications = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`http://localhost:3000/hiring-requests/${user?.email}`);
+            const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+            
+            const res = await axios.get(`http://localhost:3000/hiring-requests/${user?.email}`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
             setApplications(res.data);
         } catch (error) {
             console.error("Error fetching applications:", error);
@@ -31,7 +37,13 @@ const MyApplications = () => {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to withdraw this application?")) {
             try {
-                const res = await axios.delete(`http://localhost:3000/cancel-tuition/${id}`);
+                const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+                
+                const res = await axios.delete(`http://localhost:3000/cancel-tuition/${id}`, {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                });
                 if (res.data.deletedCount > 0) {
                     toast.success("Application withdrawn successfully");
                     setApplications(applications.filter(app => app._id !== id));
@@ -45,9 +57,9 @@ const MyApplications = () => {
     const handleEdit = (application) => {
         setEditingApplication(application);
         setFormData({
-            qualifications: application.qualifications,
-            experience: application.experience,
-            expectedSalary: application.expectedSalary
+            qualifications: application.qualifications || '',
+            experience: application.experience || '',
+            expectedSalary: application.expectedSalary || ''
         });
     };
 
@@ -57,13 +69,23 @@ const MyApplications = () => {
     };
 
     const handleUpdate = () => {
-        axios.patch(`http://localhost:3000/hiring-requests/${editingApplication._id}`, formData)
+        const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+        
+        axios.patch(`http://localhost:3000/hiring-requests/${editingApplication._id}`, formData, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
             .then(res => {
                 if (res.data.modifiedCount > 0) {
                     toast.success("Application updated successfully");
                     setApplications(applications.map(app => app._id === editingApplication._id ? { ...app, ...formData } : app));
                     setEditingApplication(null);
                 }
+            })
+            .catch(error => {
+                console.error("Update error:", error);
+                toast.error("Failed to update application");
             });
     };
 
@@ -95,14 +117,12 @@ const MyApplications = () => {
                                 <tr key={app._id} className="hover:bg-slate-50 transition-colors">
                                     <td>
                                         <div className="font-black text-slate-700 uppercase tracking-tight">
-                                            {/* Fix: Ensure the field name matches what is saved in DB */}
                                             {app.subject || "Not Specified"}
                                         </div>
                                         <div className="text-[10px] text-slate-400 font-bold italic">Student: {app.studentEmail}</div>
                                     </td>
                                     <td>
                                         <div className="font-bold text-orange-600">
-                                            {/* Fix: Directly show the numeric salary saved from the tuition post */}
                                             {app.salary && app.salary !== "Negotiable" ? `$${app.salary}` : "Negotiable"}
                                         </div>
                                     </td>
@@ -122,7 +142,7 @@ const MyApplications = () => {
                                                 <button onClick={() => handleEdit(app)} className="btn btn-sm btn-warning mr-2">
                                                     <FaEdit />
                                                 </button>
-                                                <button onClick={() => handleDelete(app._id)} className="btn btn-sm btn-danger">
+                                                <button onClick={() => handleDelete(app._id)} className="btn btn-sm btn-error text-white">
                                                     <FaTrashAlt />
                                                 </button>
                                             </div>
@@ -138,38 +158,47 @@ const MyApplications = () => {
             )}
 
             {editingApplication && (
-                <div className="mt-6">
-                    <h3 className="text-xl font-bold mb-4">Edit Application</h3>
+                <div className="mt-10 p-6 bg-slate-50 rounded-3xl border border-slate-200">
+                    <h3 className="text-xl font-black text-slate-800 uppercase italic mb-6">Edit Application</h3>
                     <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input
-                                type="text"
-                                name="qualifications"
-                                value={formData.qualifications}
-                                onChange={handleFormChange}
-                                placeholder="Qualifications"
-                                className="input input-bordered"
-                            />
-                            <input
-                                type="text"
-                                name="experience"
-                                value={formData.experience}
-                                onChange={handleFormChange}
-                                placeholder="Experience"
-                                className="input input-bordered"
-                            />
-                            <input
-                                type="text"
-                                name="expectedSalary"
-                                value={formData.expectedSalary}
-                                onChange={handleFormChange}
-                                placeholder="Expected Salary"
-                                className="input input-bordered"
-                            />
+                            <div className="form-control">
+                                <label className="label"><span className="label-text font-bold text-[10px] uppercase">Qualifications</span></label>
+                                <input
+                                    type="text"
+                                    name="qualifications"
+                                    value={formData.qualifications}
+                                    onChange={handleFormChange}
+                                    placeholder="Qualifications"
+                                    className="input input-bordered rounded-xl"
+                                />
+                            </div>
+                            <div className="form-control">
+                                <label className="label"><span className="label-text font-bold text-[10px] uppercase">Experience</span></label>
+                                <input
+                                    type="text"
+                                    name="experience"
+                                    value={formData.experience}
+                                    onChange={handleFormChange}
+                                    placeholder="Experience"
+                                    className="input input-bordered rounded-xl"
+                                />
+                            </div>
+                            <div className="form-control">
+                                <label className="label"><span className="label-text font-bold text-[10px] uppercase">Expected Salary</span></label>
+                                <input
+                                    type="text"
+                                    name="expectedSalary"
+                                    value={formData.expectedSalary}
+                                    onChange={handleFormChange}
+                                    placeholder="Expected Salary"
+                                    className="input input-bordered rounded-xl"
+                                />
+                            </div>
                         </div>
-                        <div className="mt-4">
-                            <button type="submit" className="btn btn-primary mr-2">Update</button>
-                            <button onClick={() => setEditingApplication(null)} className="btn btn-secondary">Cancel</button>
+                        <div className="mt-6 flex gap-3">
+                            <button type="submit" className="btn btn-primary rounded-xl px-8 font-black uppercase italic">Update</button>
+                            <button type="button" onClick={() => setEditingApplication(null)} className="btn btn-ghost rounded-xl font-black uppercase italic">Cancel</button>
                         </div>
                     </form>
                 </div>
