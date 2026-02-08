@@ -1,16 +1,46 @@
-# React + Vite
+# 🎓 ETUITION BD - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, high-performance Tutor Marketplace platform built with **React 19** and **Vite**. This application connects students with qualified tutors through a seamless interface, secure payments, and a robust dashboard system.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Role-Based Dashboards:** Unique, highly-functional interfaces for **Admins**, **Tutors**, and **Students**.
+* **Stripe Payment Integration:** Secure salary payments with automatic tracking of platform fees (10% from student surcharge + 10% tutor commission).
+* **Ongoing Job Management:** Real-time tracking of active tuitions with the ability for students to update terms or terminate contracts.
+* **Admin Business Intelligence:** A centralized analytics hub featuring **Recharts** for visualizing revenue growth and transaction volume.
+* **Enhanced UX/UI:** * **Framer Motion** for smooth page transitions and micro-interactions.
+    * **Lottie-React** for engaging authentication animations.
+    * **DaisyUI & Tailwind CSS 4.0** for a sleek, modern aesthetic.
+* **Instant Auth Flow:** Optimized Google Login with background JWT generation for a zero-wait redirection experience.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Core
+- **Framework:** React 19 (Vite)
+- **Routing:** React Router 7
+- **Styling:** Tailwind CSS 4.0 & DaisyUI 5.0
+- **Form Handling:** React Hook Form
 
-## Expanding the ESLint configuration
+### Libraries
+- **Payments:** @stripe/react-stripe-js & @stripe/stripe-js
+- **Charts:** Recharts
+- **Animations:** Framer Motion & Lottie-React
+- **Icons:** React Icons
+- **Notifications:** React Hot Toast & SweetAlert2
+- **Data Fetching:** Axios
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📦 Installation & Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/your-username/etuition-bd-client.git](https://github.com/your-username/etuition-bd-client.git)
+
+
+npm install
+
+
+VITE_STRIPE_PUBLIC_KEY=your_stripe_public_key
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+
+
+npm run dev
