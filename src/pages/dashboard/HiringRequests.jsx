@@ -10,23 +10,48 @@ const HiringRequests = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/hiring-requests/${user?.email}`)
-            .then(res => {
-                setRequests(res.data);
-                setLoading(false);
-            });
+        if (user?.email) {
+            // লোকাল স্টোরেজ থেকে টোকেন সংগ্রহ
+            const token = localStorage.getItem('access-token');
+
+            axios.get(`http://localhost:3000/hiring-requests/${user?.email}`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
+                .then(res => {
+                    setRequests(res.data);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.error("Error fetching requests:", err);
+                    setLoading(false);
+                });
+        }
     }, [user?.email]);
 
     const handleStatusUpdate = async (id, newStatus) => {
         try {
-            const res = await axios.patch(`http://localhost:3000/hiring-requests/status/${id}`, { status: newStatus });
+            // আপডেট করার সময়ও টোকেন প্রয়োজন
+            const token = localStorage.getItem('access-token');
+
+            const res = await axios.patch(`http://localhost:3000/hiring-requests/status/${id}`, 
+                { status: newStatus },
+                {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             if (res.data.modifiedCount > 0) {
                 toast.success(`Request ${newStatus} successfully!`);
                 // লোকাল স্টেট আপডেট করা যাতে পেজ রিফ্রেশ না লাগে
                 setRequests(requests.map(req => req._id === id ? { ...req, status: newStatus } : req));
             }
         } catch (error) {
-            toast.error("Failed to update status", error);
+            toast.error("Failed to update status");
+            console.error(error);
         }
     };
 
