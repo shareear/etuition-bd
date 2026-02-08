@@ -12,7 +12,14 @@ const TutorProfile = () => {
     useEffect(() => {
         const fetchTutor = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/tutor-profile/${tutorId}`);
+                // লোকাল স্টোরেজ থেকে টোকেন সংগ্রহ
+                const token = localStorage.getItem('access-token');
+
+                const response = await axios.get(`http://localhost:3000/tutor-profile/${tutorId}`, {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                });
                 setTutor(response.data);
                 setLoading(false);
             } catch (error) {

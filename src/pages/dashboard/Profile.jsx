@@ -12,7 +12,14 @@ const Profile = () => {
 
     useEffect(() => {
         if (user?.email) {
-            axios.get(`http://localhost:3000/user-stats/${user.email}`)
+            // লোকাল স্টোরেজ থেকে টোকেন সংগ্রহ
+            const token = localStorage.getItem('access-token');
+
+            axios.get(`http://localhost:3000/user-stats/${user.email}`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
                 .then(res => setProfileData(res.data))
                 .catch(err => console.log(err));
         }
@@ -27,6 +34,7 @@ const Profile = () => {
 
     if (!profileData) return <div className="flex justify-center p-20"><span className="loading loading-spinner loading-lg"></span></div>;
 
+    // ব্যাকএন্ড থেকে আসা ডাটা স্ট্রাকচার অনুযায়ী ডিস্ট্রাকচারিং
     const { user: dbUser, stats } = profileData;
 
     return (
@@ -35,20 +43,20 @@ const Profile = () => {
             <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 flex flex-col md:flex-row items-center gap-8 mb-8">
                 <div className="relative">
                     <img 
-                        src={dbUser.image || user?.photoURL || "https://via.placeholder.com/150"} 
+                        src={dbUser?.image || user?.photoURL || "https://via.placeholder.com/150"} 
                         alt="Profile" 
                         className="w-32 h-32 rounded-3xl object-cover ring-4 ring-orange-50 shadow-lg"
                     />
                     <span className="absolute -bottom-2 -right-2 bg-green-500 text-white text-[10px] px-2 py-1 rounded-lg font-bold uppercase tracking-wider">
-                        {dbUser.role}
+                        {dbUser?.role}
                     </span>
                 </div>
                 
                 <div className="flex-1 text-center md:text-left">
-                    <h1 className="text-3xl font-black text-slate-800 uppercase italic leading-none mb-2">{dbUser.name}</h1>
+                    <h1 className="text-3xl font-black text-slate-800 uppercase italic leading-none mb-2">{dbUser?.name}</h1>
                     <div className="flex flex-wrap justify-center md:justify-start gap-4 text-slate-500 text-sm">
-                        <span className="flex items-center gap-1"><FaEnvelope className="text-orange-500"/> {dbUser.email}</span>
-                        {dbUser.phone && <span className="flex items-center gap-1"><FaPhone className="text-orange-500"/> {dbUser.phone}</span>}
+                        <span className="flex items-center gap-1"><FaEnvelope className="text-orange-500"/> {dbUser?.email}</span>
+                        {dbUser?.phone && <span className="flex items-center gap-1"><FaPhone className="text-orange-500"/> {dbUser?.phone}</span>}
                     </div>
                 </div>
 
@@ -64,34 +72,34 @@ const Profile = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Admin View */}
-                {dbUser.role === 'admin' && (
+                {dbUser?.role === 'admin' && (
                     <>
-                        <StatCard label="Total Platform Users" value={stats.totalUsers} desc="Registered Accounts" />
-                        <StatCard label="Active Tuition Posts" value={stats.totalTuitions} desc="Approved & Pending" />
-                        <StatCard label="Total Revenue" value={`$${stats.earnings}`} desc="Successful Transactions" />
+                        <StatCard label="Total Platform Users" value={stats?.totalUsers || 0} desc="Registered Accounts" />
+                        <StatCard label="Active Tuition Posts" value={stats?.totalTuitions || 0} desc="Approved & Pending" />
+                        <StatCard label="Total Revenue" value={`$${stats?.earnings || 0}`} desc="Successful Transactions" />
                     </>
                 )}
 
                 {/* Tutor View */}
-                {dbUser.role === 'tutor' && (
+                {dbUser?.role === 'tutor' && (
                     <>
-                        <StatCard label="Applied Jobs" value={stats.totalApplied} desc="Total Applications Submitted" />
-                        <StatCard label="Ongoing Tuitions" value={stats.ongoingTuitions} desc="Currently Teaching" />
+                        <StatCard label="Applied Jobs" value={stats?.applications || 0} desc="Total Applications Submitted" />
+                        <StatCard label="Ongoing Tuitions" value={0} desc="Currently Teaching" />
                         <StatCard label="Total Earnings" value="$0" desc="Coming from Revenue History" />
                     </>
                 )}
 
                 {/* Student View */}
-                {dbUser.role === 'student' && (
+                {dbUser?.role === 'student' && (
                     <>
-                        <StatCard label="Tuitions Posted" value={stats.myPosts} desc="Jobs created by you" />
-                        <StatCard label="Payments Made" value={stats.totalPayments} desc="Successful Transactions" />
-                        <StatCard label="Hired Tutors" value={stats.totalPayments} desc="Verified Connections" />
+                        <StatCard label="Tuitions Posted" value={stats?.tuitions || 0} desc="Jobs created by you" />
+                        <StatCard label="Payments Made" value={stats?.totalPaid || 0} desc="Successful Transactions" />
+                        <StatCard label="Hired Tutors" value={stats?.totalPaid || 0} desc="Verified Connections" />
                     </>
                 )}
             </div>
 
-            {/* Account Status / Challenges (Requirement: Unique Design) */}
+            {/* Account Status */}
             <div className="mt-8 bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
                 <div className="relative z-10">
                     <h2 className="text-2xl font-bold italic">Account Verification Status</h2>
@@ -105,7 +113,6 @@ const Profile = () => {
     );
 };
 
-// Reusable Stats Component
 const StatCard = ({ label, value, desc }) => (
     <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
         <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1">{label}</p>
