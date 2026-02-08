@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
 import { auth } from "../utils/firebase.init";
+import axios from 'axios'; // axios ইমপোর্ট করুন
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -35,31 +36,33 @@ const AuthProvider = ({children}) => {
 
     const signOutUser = () =>{
         setLoading(true);
+        // লগআউট করলে টোকেন রিমুভ করে দেওয়া ভালো
+        localStorage.removeItem('access-token');
         return signOut(auth);
     };
 
     useEffect(()=>{
         const unsubcribe = onAuthStateChanged(auth, async (currentUser)=>{
             setUser(currentUser);
-            setLoading(false);
-
+            
             if (currentUser) {
-                try {
-                    const token = await currentUser.getIdToken();
-                    localStorage.setItem('e-tuition-token', token);
-                } catch (error) {
-                    console.error('Error retrieving JWT token:', error);
-                }
+                // ইউজার থাকলে ব্যাকএন্ড থেকে টোকেন নিয়ে আসা
+                const userInfo = { email: currentUser.email };
+                axios.post('http://localhost:3000/jwt', userInfo)
+                    .then(res => {
+                        if (res.data.token) {
+                            localStorage.setItem('access-token', res.data.token);
+                            setLoading(false);
+                        }
+                    })
             } else {
-                localStorage.removeItem('e-tuition-token');
+                localStorage.removeItem('access-token');
+                setLoading(false);
             }
         });
 
         return () => unsubcribe();
     }, []);
-
-
-
 
     const authinfo = {
         signInWithGoogle,
@@ -72,9 +75,9 @@ const AuthProvider = ({children}) => {
         resetPassword
     }
     return (
-        <AuthContext value={authinfo}>
+        <AuthContext.Provider value={authinfo}>
             {children}
-        </AuthContext>
+        </AuthContext.Provider>
     );
 };
 
