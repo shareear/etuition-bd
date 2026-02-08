@@ -30,6 +30,7 @@ import TutorsDetails from "../components/shared/TutorsDetails";
 import HiringRequests from "../pages/dashboard/HiringRequests";
 import StudentProfile from "../pages/profile/StudentProfile";
 import TutorProfile from "../pages/profile/TutorProfile";
+import PaymentHistory from "../pages/dashboard/PaymentHistory";
 
 export const router = createBrowserRouter([
     {
@@ -102,7 +103,8 @@ export const router = createBrowserRouter([
         { path: "my-applications", element: <MyApplications /> },
         { path: "ongoing-tuitions", element: <OngoingTuitions /> },
         { path: "revenue", element: <RevenueHistory /> },
-        { path: "hiringrequest", element: <HiringRequests/>}
+        { path: "hiringrequest", element: <HiringRequests/>},
+        {path: "payment-history", element: <PaymentHistory/>}
     ]
 },
 {
