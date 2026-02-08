@@ -32,10 +32,28 @@ import HiringRequests from "../pages/dashboard/HiringRequests";
 export const router = createBrowserRouter([
     {
         path: "/",
-        hydrateFallbackElement: <Loader fullPage={true} />, 
-        Component: RootLayout, 
-        ErrorBoundary: Notfound,
+        element: <RootLayout />,
+        loader: () => {
+            return new Promise((resolve) => {
+                setTimeout(() => resolve(), 2000); // Simulate loading time
+            });
+        },
         children: [
+            {
+                path: "home",
+                element: <Home />,
+                loader: () => <Loader fullPage={true} />,
+            },
+            {
+                path: "about",
+                element: <About />,
+                loader: () => <Loader fullPage={true} />,
+            },
+            {
+                path: "contact",
+                element: <Contact />,
+                loader: () => <Loader fullPage={true} />,
+            },
             { index: true, Component: Home },
             { path: "tuitions", Component: Tuitions },
             { path: "tutors", Component: Tutors },

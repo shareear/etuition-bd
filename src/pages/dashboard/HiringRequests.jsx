@@ -41,6 +41,8 @@ const HiringRequests = () => {
                         <tr>
                             <th>Student</th>
                             <th>Applied Date</th>
+                            <th>Subject</th>
+                            <th>Salary</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -62,6 +64,8 @@ const HiringRequests = () => {
                                     </div>
                                 </td>
                                 <td>{new Date(request.appliedDate).toLocaleDateString()}</td>
+                                <td>{request.subject || "Not Specified"}</td>
+                                <td>${request.salary || "0"}</td>
                                 <td>
                                     <span className={`badge font-semibold ${
                                         request.status === 'Approved' ? 'badge-success text-white' : 
