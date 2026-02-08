@@ -8,6 +8,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoEye } from "react-icons/io5";
 import { IoMdEyeOff } from "react-icons/io";
+import axios from 'axios'; // Added for JWT request
 
 const Login = () => {
     const { signInWithEmail, signInWithGoogle, resetPassword } = useAuth();
@@ -44,13 +45,22 @@ const Login = () => {
         
         signInWithEmail(data.email, data.password)
             .then((result) => {
-                toast.success("Login Successful!", { id: toastId });
-                
-                if (userType === 'admin' || data.email === adminEmail) {
-                    navigate("/dashboard/manage-tuitions");
-                } else {
-                    navigate(location?.state || "/");
-                }
+                // --- JWT Generation Start ---
+                const loggedUser = { email: result.user.email };
+                axios.post('http://localhost:3000/jwt', loggedUser)
+                    .then(res => {
+                        if (res.data.token) {
+                            localStorage.setItem('access-token', res.data.token);
+                            toast.success("Login Successful!", { id: toastId });
+                            
+                            if (userType === 'admin' || data.email === adminEmail) {
+                                navigate("/dashboard/manage-tuitions");
+                            } else {
+                                navigate(location?.state || "/");
+                            }
+                        }
+                    })
+                // --- JWT Generation End ---
             })
             .catch((error) => {
                 console.error(error);
@@ -62,8 +72,17 @@ const Login = () => {
         const toastId = toast.loading("Connecting with Google...");
         signInWithGoogle()
             .then((result) => {
-                toast.success("Google Login Successful!", { id: toastId });
-                navigate(location?.state || "/");
+                // --- JWT Generation Start ---
+                const loggedUser = { email: result.user.email };
+                axios.post('http://localhost:3000/jwt', loggedUser)
+                    .then(res => {
+                        if (res.data.token) {
+                            localStorage.setItem('access-token', res.data.token);
+                            toast.success("Google Login Successful!", { id: toastId });
+                            navigate(location?.state || "/");
+                        }
+                    })
+                // --- JWT Generation End ---
             })
             .catch((error) => {
                 toast.error(error.message || "Google Login failed.", { id: toastId });
