@@ -75,6 +75,37 @@ const OngoingTuitions = () => {
         });
     };
 
+    const handleUpdateJob = async (id, updatedData) => {
+        try {
+            const res = await axios.patch(`http://localhost:3000/update-tuition/${id}`, updatedData);
+            if (res.data.modifiedCount > 0) {
+                Swal.fire({
+                    title: "Updated!",
+                    text: "The tuition details have been updated successfully.",
+                    icon: "success",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                fetchOngoingJobs(); // Refresh the list
+                setSelectedJob(null);
+                document.getElementById('job_modal').close();
+            }
+        } catch {
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to update the tuition details.",
+                icon: "error"
+            });
+        }
+    };
+
+    const handleEditJob = (job) => {
+        // Logic to open a form for editing the job
+        // This can include setting the selected job and showing a form modal
+        console.log("Edit job:", job);
+    };
+
     if (loading) return <div className="flex justify-center p-20"><span className="loading loading-spinner loading-lg"></span></div>;
 
     return (
@@ -160,6 +191,13 @@ const OngoingTuitions = () => {
                                         className="btn btn-block bg-red-50 border-none text-red-600 hover:bg-red-100 rounded-2xl font-black uppercase italic"
                                     >
                                         <FaTrashAlt /> Cancel This Tuition
+                                    </button>
+
+                                    <button 
+                                        onClick={() => handleEditJob(selectedJob)}
+                                        className="btn btn-block bg-blue-50 border-none text-blue-600 hover:bg-blue-100 rounded-2xl font-black uppercase italic"
+                                    >
+                                        <FaEdit /> Edit Contract
                                     </button>
                                 </div>
                             </div>
