@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router'; 
-import { FaCreditCard, FaCheckCircle, FaClock, FaExclamationTriangle } from 'react-icons/fa';
+import { FaCreditCard, FaCheckCircle, FaClock } from 'react-icons/fa';
 
 const AppliedTutors = () => {
     const { user } = useAuth();
@@ -66,8 +66,7 @@ const AppliedTutors = () => {
                                 applications.map((app) => {
                                     // SAFETY LOGIC: Convert string salary like "$1000" or "Negotiable" to number
                                     const rawSalary = app.salary ? app.salary.toString().replace(/[$,]/g, '') : "0";
-                                    const isNegotiable = isNaN(parseFloat(rawSalary)) || parseFloat(rawSalary) <= 0;
-                                    const numericSalary = isNegotiable ? 0 : parseFloat(rawSalary);
+                                    const numericSalary = parseFloat(rawSalary);
 
                                     return (
                                         <tr key={app._id} className="hover:bg-slate-50/50 transition-colors border-b border-slate-50">
@@ -82,13 +81,7 @@ const AppliedTutors = () => {
                                             </td>
                                             <td>
                                                 <div className="font-bold text-slate-700">
-                                                    {isNegotiable ? (
-                                                        <span className="text-orange-500 flex items-center gap-1 text-xs">
-                                                            <FaExclamationTriangle /> Negotiable
-                                                        </span>
-                                                    ) : (
-                                                        `$${numericSalary}`
-                                                    )}
+                                                    ${numericSalary}
                                                 </div>
                                             </td>
                                             <td>
@@ -103,28 +96,18 @@ const AppliedTutors = () => {
                                             <td className="text-center">
                                                 {/* ACTION BUTTONS */}
                                                 {app.status === 'Approved' ? (
-                                                    isNegotiable ? (
-                                                        <button 
-                                                            disabled
-                                                            className="btn btn-sm opacity-50 cursor-not-allowed rounded-xl text-[10px] font-bold uppercase"
-                                                            title="Salary must be fixed before payment"
-                                                        >
-                                                            Wait for Price
-                                                        </button>
-                                                    ) : (
-                                                        <Link 
-                                                            to={`/dashboard/payment/${app._id}`}
-                                                            state={{ 
-                                                                salary: numericSalary, 
-                                                                tutorEmail: app.tutorEmail, 
-                                                                subject: app.subject || "Tuition Fee" 
-                                                            }}
-                                                            className="btn btn-sm bg-orange-600 hover:bg-orange-700 text-white border-none rounded-xl gap-2 shadow-md shadow-orange-100 px-4"
-                                                        >
-                                                            <FaCreditCard className="text-xs" />
-                                                            Pay Now
-                                                        </Link>
-                                                    )
+                                                    <Link 
+                                                        to={`/dashboard/payment/${app._id}`}
+                                                        state={{ 
+                                                            salary: numericSalary, 
+                                                            tutorEmail: app.tutorEmail, 
+                                                            subject: app.subject || "Tuition Fee" 
+                                                        }}
+                                                        className="btn btn-sm bg-orange-600 hover:bg-orange-700 text-white border-none rounded-xl gap-2 shadow-md shadow-orange-100 px-4"
+                                                    >
+                                                        <FaCreditCard className="text-xs" />
+                                                        Pay Now
+                                                    </Link>
                                                 ) : app.status === 'paid' ? (
                                                     <div className="flex items-center justify-center gap-1 text-emerald-600 font-black text-xs uppercase italic">
                                                         <FaCheckCircle />
