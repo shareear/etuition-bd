@@ -1,8 +1,9 @@
 import React from 'react';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { useLocation, useParams } from "react-router";
+import { useLocation, useParams, useNavigate } from "react-router";
 import CheckoutForm from "./CheckoutForm";
+import { useEffect } from 'react';
 
 // Stripe Public Key Load
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -10,26 +11,79 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 const Payment = () => {
     const { id } = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
     
     // location.state থেকে ডাটা রিসিভ করা
     const { salary, tutorEmail, subject } = location.state || {};
 
-    // ফিক্স: স্যালারিকে নম্বর হিসেবে কনভার্ট করা (যদি স্ট্রিং আসে তবে ক্লিন করা)
+    // Validate and clean salary
     const cleanSalary = salary ? parseFloat(salary.toString().replace(/[$,]/g, '')) : 0;
 
-    // টোকেন ভেরিফিকেশন চেক (সিকিউরিটি এডিশন)
+    // Token verification
     const token = localStorage.getItem('access-token');
 
-    // যদি স্যালারি না থাকে বা ০ হয়, অথবা টোকেন না থাকে তবে পেমেন্ট পেজ দেখাবে না
-    if (!cleanSalary || cleanSalary <= 0 || !token) {
+    // Validate required data
+    useEffect(() => {
+        // If critical data is missing, redirect back
+        if (!id || !tutorEmail || !cleanSalary || cleanSalary <= 0 || !token) {
+            console.error("Payment page error: Missing required data");
+        }
+    }, [id, tutorEmail, cleanSalary, token]);
+
+    // Show error state if validation fails
+    if (!token) {
         return (
             <div className="p-20 text-center">
                 <h2 className="text-2xl font-black text-red-500 uppercase italic">
-                    {!token ? "Authentication Required" : "Invalid Session"}
+                    Authentication Required
                 </h2>
-                <p className="text-slate-500">
-                    {!token ? "Please login to continue." : "Please go back to Applied Tutors and try again."}
+                <p className="text-slate-500 mt-4">
+                    Please login to continue with payment.
                 </p>
+                <button 
+                    onClick={() => navigate('/login')}
+                    className="mt-6 btn bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                    Go to Login
+                </button>
+            </div>
+        );
+    }
+
+    if (!cleanSalary || cleanSalary <= 0) {
+        return (
+            <div className="p-20 text-center">
+                <h2 className="text-2xl font-black text-red-500 uppercase italic">
+                    Invalid Payment Amount
+                </h2>
+                <p className="text-slate-500 mt-4">
+                    The payment amount is invalid. Please go back and try again.
+                </p>
+                <button 
+                    onClick={() => navigate('/dashboard/applied-tutors')}
+                    className="mt-6 btn bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                    Back to Applied Tutors
+                </button>
+            </div>
+        );
+    }
+
+    if (!id || !tutorEmail) {
+        return (
+            <div className="p-20 text-center">
+                <h2 className="text-2xl font-black text-red-500 uppercase italic">
+                    Invalid Session
+                </h2>
+                <p className="text-slate-500 mt-4">
+                    Required information is missing. Please go back to Applied Tutors and try again.
+                </p>
+                <button 
+                    onClick={() => navigate('/dashboard/applied-tutors')}
+                    className="mt-6 btn bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                    Back to Applied Tutors
+                </button>
             </div>
         );
     }
@@ -43,7 +97,7 @@ const Payment = () => {
                         Tuition Fee for {subject || "Selected Course"}
                     </p>
                     <h3 className="text-4xl font-black text-orange-600 italic">
-                        ${cleanSalary}
+                        ${cleanSalary.toFixed(2)}
                     </h3>
                     <p className="text-[9px] text-orange-400 font-bold uppercase mt-2 italic">
                         Tutor: {tutorEmail}
@@ -55,7 +109,7 @@ const Payment = () => {
                 <Elements stripe={stripePromise}>
                     <CheckoutForm 
                         appId={id} 
-                        salary={cleanSalary} // এখন কনফার্ম নম্বর যাচ্ছে
+                        salary={cleanSalary}
                         tutorEmail={tutorEmail} 
                     />
                 </Elements>

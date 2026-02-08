@@ -14,6 +14,7 @@ const AppliedTutors = () => {
             axios.get(`http://localhost:3000/hiring-requests-by-student/${user.email}`)
                 .then(res => {
                     setApplications(res.data);
+                    console.log("Fetched Application data", res.data);
                     setLoading(false);
                 })
                 .catch(err => {

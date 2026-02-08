@@ -15,39 +15,55 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
     const [cardError, setCardError] = useState("");
 
     useEffect(() => {
-        // ফিক্স: স্যালারি থেকে যেকোনো নন-নিউমেরিক ক্যারেক্টার ($ বা কমা) সরিয়ে শুধু নম্বর নেওয়া
-        const cleanSalary = salary ? salary.toString().replace(/[$,]/g, '') : "0";
-        const amount = parseFloat(cleanSalary);
-
-        // স্ট্রিক্ট চেক: যদি স্যালারি ভ্যালিড নম্বর হয় তবেই ব্যাকএন্ডে রিকোয়েস্ট যাবে
-        if (!isNaN(amount) && amount > 0) {
-            // Authorization Header ফিক্স
-            const token = localStorage.getItem('access-token');
-
-            axios.post("http://localhost:3000/create-payment-intent", 
-                { salary: amount },
-                { headers: { authorization: `Bearer ${token}` } }
-            )
-                .then(res => {
-                    setClientSecret(res.data.clientSecret);
-                })
-                .catch(err => {
-                    console.error("Backend Error:", err.response?.data || err.message);
-                    setCardError("Failed to initialize payment. Please try again.");
-                });
-        } else {
-            setTimeout(() => {
-                setCardError("Invalid payment amount detected.");
-            }, 0);
+        // Validate salary is a valid number
+        if (!salary || typeof salary !== 'number' || salary <= 0) {
+            setCardError("Invalid payment amount detected.");
+            return;
         }
+
+        // Get authorization token
+        const token = localStorage.getItem('access-token');
+        
+        if (!token) {
+            setCardError("Authentication required. Please login again.");
+            return;
+        }
+
+        // Create payment intent
+        axios.post("http://localhost:3000/create-payment-intent", 
+            { salary: salary },
+            { 
+                headers: { 
+                    authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                } 
+            }
+        )
+        .then(res => {
+            if (res.data.clientSecret) {
+                setClientSecret(res.data.clientSecret);
+                setCardError("");
+            } else {
+                setCardError("Failed to initialize payment.");
+            }
+        })
+        .catch(err => {
+            console.error("Payment Intent Error:", err.response?.data || err.message);
+            const errorMsg = err.response?.data?.message || "Failed to initialize payment. Please try again.";
+            setCardError(errorMsg);
+        });
     }, [salary]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!stripe || !elements || !clientSecret || processing) return;
+        if (!stripe || !elements || !clientSecret || processing) {
+            return;
+        }
 
         setProcessing(true);
+        setCardError("");
+
         const card = elements.getElement(CardElement);
 
         if (card === null) {
@@ -55,6 +71,7 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
             return;
         }
 
+        // Confirm card payment
         const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
                 card: card,
@@ -74,48 +91,60 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
                 confirmButtonColor: '#ea580c'
             });
             setProcessing(false);
-        } else {
-            setCardError("");
-            if (paymentIntent.status === "succeeded") {
-                // পেমেন্ট সফল হওয়ার পর ডেটাবেজে পাঠানোর জন্য স্যালারি পুনরায় ক্লিন করা
-                const finalSalary = parseFloat(salary.toString().replace(/[$,]/g, '')) || 0;
+        } else if (paymentIntent && paymentIntent.status === "succeeded") {
+            // Payment successful - save to database
+            const paymentInfo = {
+                transactionId: paymentIntent.id,
+                studentEmail: user.email,
+                tutorEmail: tutorEmail,
+                salary: salary,
+                appId: appId,
+                status: "paid",
+                date: new Date()
+            };
 
-                const paymentInfo = {
-                    transactionId: paymentIntent.id,
-                    studentEmail: user.email,
-                    tutorEmail,
-                    salary: finalSalary,
-                    appId,
-                    status: "paid",
-                    date: new Date()
-                };
-
-                try {
-                    // পেমেন্ট সেভ করার সময়ও Authorization Header প্রয়োজন
-                    const token = localStorage.getItem('access-token');
-                    const res = await axios.post("http://localhost:3000/payments", 
-                        paymentInfo,
-                        { headers: { authorization: `Bearer ${token}` } }
-                    );
-
-                    if (res.data.paymentResult.insertedId) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Payment Successful!',
-                            text: `Transaction ID: ${paymentIntent.id}`,
-                            confirmButtonColor: '#ea580c',
-                            background: '#fff',
-                            customClass: { popup: 'rounded-3xl' }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                navigate('/dashboard/applied-tutors');
-                            }
-                        });
-                    }
-                } catch (dbError) {
-                    console.error("Database save error:", dbError);
-                    setProcessing(false);
+            try {
+                const token = localStorage.getItem('access-token');
+                
+                if (!token) {
+                    throw new Error("Authentication token missing");
                 }
+
+                const res = await axios.post("http://localhost:3000/payments", 
+                    paymentInfo,
+                    { 
+                        headers: { 
+                            authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        } 
+                    }
+                );
+
+                if (res.data.paymentResult.insertedId) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Payment Successful!',
+                        text: `Transaction ID: ${paymentIntent.id}`,
+                        confirmButtonColor: '#ea580c',
+                        background: '#fff',
+                        customClass: { popup: 'rounded-3xl' }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            navigate('/dashboard/applied-tutors');
+                        }
+                    });
+                } else {
+                    throw new Error("Failed to save payment record");
+                }
+            } catch (dbError) {
+                console.error("Database save error:", dbError);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Payment Processed',
+                    text: 'Payment was successful but there was an issue saving the record. Please contact support with Transaction ID: ' + paymentIntent.id,
+                    confirmButtonColor: '#ea580c'
+                });
+                setProcessing(false);
             }
         }
     };
@@ -144,8 +173,8 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
 
             <button
                 type="submit"
-                disabled={!stripe || !clientSecret || processing}
-                className={`btn btn-primary w-full h-12 bg-orange-600 hover:bg-orange-700 border-none text-white font-black uppercase italic tracking-widest rounded-2xl shadow-lg transition-all ${(!stripe || !clientSecret || processing) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={!stripe || !clientSecret || processing || !!cardError}
+                className={`btn btn-primary w-full h-12 bg-orange-600 hover:bg-orange-700 border-none text-white font-black uppercase italic tracking-widest rounded-2xl shadow-lg transition-all ${(!stripe || !clientSecret || processing || !!cardError) ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
                 {processing ? (
                     <div className="flex items-center gap-2 justify-center">
@@ -157,7 +186,7 @@ const CheckoutForm = ({ appId, salary, tutorEmail }) => {
                 )}
             </button>
             
-            {!clientSecret && !processing && (
+            {!clientSecret && !processing && !cardError && (
                 <div className="text-center">
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
                         Initializing secure connection...

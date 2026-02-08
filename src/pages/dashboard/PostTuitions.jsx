@@ -13,9 +13,12 @@ const PostTuition = () => {
             ...data,
             studentName: user?.displayName,
             studentEmail: user?.email,
+            salary: parseFloat(data.salary), // Ensure salary is a number
             status: 'pending',
             postedDate: new Date().toISOString()
         };
+
+        console.log(tuitionInfo);
 
         try {
             // --- ADDED JWT TOKEN TO HEADERS ---

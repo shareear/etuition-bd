@@ -71,17 +71,20 @@ const Login = () => {
     const handleGoogleLogin = () => {
         const toastId = toast.loading("Connecting with Google...");
         signInWithGoogle()
-            .then((result) => {
+            .then(async (result) => {
                 // --- JWT Generation Start ---
                 const loggedUser = { email: result.user.email };
-                axios.post('http://localhost:3000/jwt', loggedUser)
-                    .then(res => {
-                        if (res.data.token) {
-                            localStorage.setItem('access-token', res.data.token);
-                            toast.success("Google Login Successful!", { id: toastId });
-                            navigate(location?.state || "/");
-                        }
-                    })
+                try {
+                    const res = await axios.post('http://localhost:3000/jwt', loggedUser);
+                    if (res.data.token) {
+                        localStorage.setItem('access-token', res.data.token);
+                        toast.success("Google Login Successful!", { id: toastId });
+                        // Fixed: Navigating after successful token storage
+                        navigate(location?.state || "/", { replace: true });
+                    }
+                } catch (error) {
+                    toast.error("JWT Generation failed.", { id: toastId });
+                }
                 // --- JWT Generation End ---
             })
             .catch((error) => {

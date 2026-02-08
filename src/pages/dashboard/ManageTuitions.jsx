@@ -38,6 +38,7 @@ const ManageTuitions = () => {
 
     // ৩. স্ট্যাটাস আপডেট (Approve বা Reject) করার ফাংশন
     const handleStatusUpdate = async (id, newStatus) => {
+        // console.log(newStatus);
         try {
             const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
 
@@ -49,6 +50,7 @@ const ManageTuitions = () => {
                     }
                 }
             );
+            console.log(res.data);
             
             if (res.data.modifiedCount > 0) {
                 toast.success(`Post has been ${newStatus}!`);
