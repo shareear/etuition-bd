@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // ১. SweetAlert2 ইমপোর্ট করুন
+import Swal from 'sweetalert2'; 
 
 const PostTuition = () => {
     const { user } = useAuth();
@@ -18,15 +18,20 @@ const PostTuition = () => {
         };
 
         try {
-            const res = await axios.post('http://localhost:3000/tuitions', tuitionInfo);
+            // --- ADDED JWT TOKEN TO HEADERS ---
+            const token = localStorage.getItem('access-token');
+            const res = await axios.post('http://localhost:3000/tuitions', tuitionInfo, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
             
             if (res.data.insertedId) {
-                // ২. SweetAlert2 কনফার্মেশন ডায়ালগ
                 Swal.fire({
                     title: "Success!",
                     text: "Your tuition post has been submitted for review.",
                     icon: "success",
-                    confirmButtonColor: "#ea580c", // orange-600
+                    confirmButtonColor: "#ea580c", 
                     confirmButtonText: "Great!"
                 });
                 reset();

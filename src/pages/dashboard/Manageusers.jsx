@@ -49,7 +49,6 @@ const ManageUsers = () => {
 
             if (res.data.modifiedCount > 0) {
                 toast.success(`User is now a ${newRole}!`);
-                // লোকাল স্টেট আপডেট করা যাতে পেজ রিফ্রেশ ছাড়াই রোল পরিবর্তন দেখা যায়
                 setUsers(users.map(user => user._id === id ? { ...user, role: newRole } : user));
             }
         } catch (error) {
@@ -62,7 +61,7 @@ const ManageUsers = () => {
     const handleDeleteUser = async (id) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
-                const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
+                const token = localStorage.getItem('access-token');
 
                 const res = await axios.delete(`http://localhost:3000/users/${id}`, {
                     headers: {
