@@ -8,7 +8,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoEye } from "react-icons/io5";
 import { IoMdEyeOff } from "react-icons/io";
-import axios from 'axios'; // Added for JWT request
+import axios from 'axios';
 
 const Login = () => {
     const { signInWithEmail, signInWithGoogle, resetPassword } = useAuth();
@@ -17,7 +17,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [userType, setUserType] = useState("tutor"); 
     const location = useLocation();
-    const [forgotEmail, setForgotEmail] = useState(""); // Modal এর ইনপুট হ্যান্ডেল করার জন্য
+    const [forgotEmail, setForgotEmail] = useState("");
 
     const adminEmail = "admin@etuitionbd.com";
     const adminPass = "Fg123456";
@@ -45,7 +45,6 @@ const Login = () => {
         
         signInWithEmail(data.email, data.password)
             .then((result) => {
-                // --- JWT Generation Start ---
                 const loggedUser = { email: result.user.email };
                 axios.post('http://localhost:3000/jwt', loggedUser)
                     .then(res => {
@@ -60,7 +59,6 @@ const Login = () => {
                             }
                         }
                     })
-                // --- JWT Generation End ---
             })
             .catch((error) => {
                 console.error(error);
@@ -68,24 +66,28 @@ const Login = () => {
             });
     };
 
+    // --- OPTIMIZED GOOGLE LOGIN ---
     const handleGoogleLogin = () => {
-        const toastId = toast.loading("Connecting with Google...");
+        const toastId = toast.loading("Verifying identity...");
+        
         signInWithGoogle()
-            .then(async (result) => {
-                // --- JWT Generation Start ---
+            .then((result) => {
+                // 1. Redirect immediately for "Instant" feel
+                navigate(location?.state || "/",);
+
+                // 2. Perform JWT generation in the background
                 const loggedUser = { email: result.user.email };
-                try {
-                    const res = await axios.post('http://localhost:3000/jwt', loggedUser);
-                    if (res.data.token) {
-                        localStorage.setItem('access-token', res.data.token);
-                        toast.success("Google Login Successful!", { id: toastId });
-                        // Fixed: Navigating after successful token storage
-                        navigate(location?.state || "/", { replace: true });
-                    }
-                } catch (error) {
-                    toast.error("JWT Generation failed.", { id: toastId });
-                }
-                // --- JWT Generation End ---
+                axios.post('http://localhost:3000/jwt', loggedUser)
+                    .then(res => {
+                        if (res.data.token) {
+                            localStorage.setItem('access-token', res.data.token);
+                            toast.success("Welcome back!", { id: toastId });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Background JWT Error:", error);
+                        toast.error("Session verification failed. Please refresh.", { id: toastId });
+                    });
             })
             .catch((error) => {
                 toast.error(error.message || "Google Login failed.", { id: toastId });
@@ -95,7 +97,6 @@ const Login = () => {
     const handleToggle = (type) => {
         setUserType(type);
         reset();
-
         if (type === 'admin') {
             setValue("email", adminEmail);
             setValue("password", adminPass);
@@ -175,7 +176,6 @@ const Login = () => {
                                             {eye ? <IoMdEyeOff /> : <IoEye />}
                                         </button>
                                     </div>
-                                    {/* Forgot Password Button */}
                                     {userType !== 'admin' && (
                                         <div className="mt-1 text-right">
                                             <button 
@@ -193,7 +193,6 @@ const Login = () => {
                                     {userType === 'admin' ? 'Enter Admin Panel' : 'Login'}
                                 </button>
                             </fieldset>
-                            
                         </form>
 
                         {userType !== 'admin' && (
@@ -205,12 +204,10 @@ const Login = () => {
                 </AnimatePresence>
             </div>
 
-            {/* Forgot Password Modal */}
             <dialog id="forgot_password_modal" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box bg-white rounded-2xl">
                     <h3 className="font-black text-xl text-primary uppercase italic">Reset Password</h3>
                     <p className="py-4 text-slate-500 text-sm">Enter your account email address and we'll send you a link to reset your password.</p>
-                    
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text font-bold text-xs uppercase">Your Email</span>
@@ -224,7 +221,6 @@ const Login = () => {
                             required
                         />
                     </div>
-
                     <div className="modal-action">
                         <form method="dialog" className="flex gap-2">
                             <button className="btn btn-ghost uppercase font-bold text-xs">Cancel</button>
@@ -237,11 +233,7 @@ const Login = () => {
                         </form>
                     </div>
                 </div>
-                <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                </form>
             </dialog>
-
         </div>
     );
 };

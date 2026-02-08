@@ -43,7 +43,7 @@ const handleHireRequest = async () => {
         tutorEmail: tutor.email,
         studentName: user.displayName,
         studentEmail: user.email,
-        studentPhoto: user.photoURL,
+        studentPhoto: user.image || user?.photoURL || user?.data?.data?.url,
         salary: tutor.expectedSalary || "Negotiable",
         status: "Pending",
         appliedDate: new Date().toISOString()
