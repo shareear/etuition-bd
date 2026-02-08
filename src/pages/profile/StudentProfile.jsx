@@ -11,7 +11,14 @@ const StudentProfile = () => {
     useEffect(() => {
         const fetchStudent = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/student-profile/${studentId}`);
+                // লোকাল স্টোরেজ থেকে টোকেন সংগ্রহ
+                const token = localStorage.getItem('access-token');
+
+                const response = await axios.get(`http://localhost:3000/student-profile/${studentId}`, {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                });
                 setStudent(response.data);
                 setLoading(false);
             } catch (error) {
