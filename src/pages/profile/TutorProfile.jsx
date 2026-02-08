@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
 import MessagingSystem from '../../components/shared/MessagingSystem';
+import RatingSystem from '../../components/shared/RatingSystem';
 
 const TutorProfile = () => {
     const { tutorId } = useParams();
@@ -40,6 +41,11 @@ const TutorProfile = () => {
             <div className="mt-6">
                 <h3 className="text-xl font-bold mb-4">Message {tutor.name}</h3>
                 <MessagingSystem tutorId={tutorId} studentId={null} />
+            </div>
+
+            <div className="mt-6">
+                <h3 className="text-xl font-bold mb-4">Rate {tutor.name}</h3>
+                <RatingSystem tutorId={tutorId} />
             </div>
         </div>
     );
