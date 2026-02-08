@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
 import { FaMapMarkerAlt, FaCalendarCheck, FaPhoneAlt, FaEnvelope, FaTrashAlt, FaEdit, FaInfoCircle } from 'react-icons/fa';
-import Swal from 'sweetalert2'; // SweetAlert2 ইমপোর্ট করা হয়েছে
+import Swal from 'sweetalert2'; // SweetAlert2 ইমপোর্ট করা হয়েছে
 
 const OngoingTuitions = () => {
     const { user } = useAuth();
@@ -12,7 +12,10 @@ const OngoingTuitions = () => {
 
     const fetchOngoingJobs = () => {
         if (user?.email) {
-            axios.get(`http://localhost:3000/tutor-ongoing/${user?.email}`)
+            const token = localStorage.getItem('access-token');
+            axios.get(`http://localhost:3000/tutor-ongoing/${user?.email}`, {
+                headers: { authorization: `Bearer ${token}` }
+            })
                 .then(res => {
                     setOngoingJobs(res.data);
                     setLoading(false);
@@ -28,7 +31,7 @@ const OngoingTuitions = () => {
         fetchOngoingJobs();
     }, [user, fetchOngoingJobs]); // Added 'fetchOngoingJobs' to dependency array
 
-    // SweetAlert2 দিয়ে জব ক্যানসেল করার ফাংশন
+    // SweetAlert2 দিয়ে জব ক্যানসেল করার ফাংশন
     const handleCancelJob = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -48,7 +51,10 @@ const OngoingTuitions = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await axios.delete(`http://localhost:3000/cancel-tuition/${id}`);
+                    const token = localStorage.getItem('access-token');
+                    const res = await axios.delete(`http://localhost:3000/cancel-tuition/${id}`, {
+                        headers: { authorization: `Bearer ${token}` }
+                    });
                     if (res.data.deletedCount > 0) {
                         // Success Message
                         Swal.fire({
@@ -77,7 +83,10 @@ const OngoingTuitions = () => {
 
     const handleUpdateJob = async (id, updatedData) => {
         try {
-            const res = await axios.patch(`http://localhost:3000/update-tuition/${id}`, updatedData);
+            const token = localStorage.getItem('access-token');
+            const res = await axios.patch(`http://localhost:3000/update-tuition/${id}`, updatedData, {
+                headers: { authorization: `Bearer ${token}` }
+            });
             if (res.data.modifiedCount > 0) {
                 Swal.fire({
                     title: "Updated!",
@@ -100,10 +109,32 @@ const OngoingTuitions = () => {
         }
     };
 
+    // Function to trigger the Update flow via SweetAlert2
+    const triggerUpdateModal = (job) => {
+        Swal.fire({
+            title: 'Update Tuition Terms',
+            html:
+                `<input id="swal-input1" class="swal2-input" placeholder="Subject" value="${job.subject}">` +
+                `<input id="swal-input2" class="swal2-input" placeholder="Salary" value="${job.salary || job.expectedSalary}">`,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Update Now',
+            preConfirm: () => {
+                return {
+                    subject: document.getElementById('swal-input1').value,
+                    salary: document.getElementById('swal-input2').value
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleUpdateJob(job._id, result.value);
+            }
+        });
+    };
+
     const handleEditJob = (job) => {
-        // Logic to open a form for editing the job
-        // This can include setting the selected job and showing a form modal
-        console.log("Edit job:", job);
+        // Linked to triggerUpdateModal for active use
+        triggerUpdateModal(job);
     };
 
     if (loading) return <div className="flex justify-center p-20"><span className="loading loading-spinner loading-lg"></span></div>;
@@ -182,8 +213,12 @@ const OngoingTuitions = () => {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <button className="btn btn-block bg-slate-100 border-none text-slate-700 hover:bg-slate-200 rounded-2xl font-black uppercase italic">
-                                        <FaEdit /> Update Terms (Coming Soon)
+                                    {/* handleUpdateJob is now used here */}
+                                    <button 
+                                        onClick={() => triggerUpdateModal(selectedJob)}
+                                        className="btn btn-block bg-slate-100 border-none text-slate-700 hover:bg-slate-200 rounded-2xl font-black uppercase italic"
+                                    >
+                                        <FaEdit /> Update Terms
                                     </button>
                                     
                                     <button 
