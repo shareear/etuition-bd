@@ -28,6 +28,8 @@ import RevenueHistory from "../pages/dashboard/RevenueHistory";
 import TuitionsDetails from "../components/shared/TuitionsDetails";
 import TutorsDetails from "../components/shared/TutorsDetails";
 import HiringRequests from "../pages/dashboard/HiringRequests";
+import StudentProfile from "../pages/profile/StudentProfile";
+import TutorProfile from "../pages/profile/TutorProfile";
 
 export const router = createBrowserRouter([
     {
@@ -102,5 +104,13 @@ export const router = createBrowserRouter([
         { path: "revenue", element: <RevenueHistory /> },
         { path: "hiringrequest", element: <HiringRequests/>}
     ]
+},
+{
+    path: "student-profile/:studentId",
+    element: <StudentProfile />,
+},
+{
+    path: "tutor-profile/:tutorId",
+    element: <TutorProfile />,
 }
 ]);
