@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import axios from 'axios';
-import { FaMapMarkerAlt, FaUserGraduate, FaArrowLeft, FaInfoCircle, FaCalendarAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaUserGraduate, FaArrowLeft, FaInfoCircle, FaCalendarAlt, FaUserCircle } from 'react-icons/fa';
 import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
@@ -12,12 +12,23 @@ const TuitionsDetails = () => {
     const [tuition, setTuition] = useState(null);
     const [role, setRole] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [studentInfo, setStudentInfo] = useState(null); // Added state for Student Info
 
     useEffect(() => {
         // Fetch Tuition Data
         axios.get(`http://localhost:3000/tuition/${id}`)
             .then(res => {
                 setTuition(res.data);
+                
+                // Fetch Student Profile Data using the email from tuition post
+                if (res.data?.studentEmail) {
+                    axios.get(`http://localhost:3000/user-stats/${res.data.studentEmail}`, {
+                        headers: { authorization: `Bearer ${localStorage.getItem('access-token')}` }
+                    })
+                    .then(userRes => setStudentInfo(userRes.data.user))
+                    .catch(err => console.error("Error fetching student profile:", err));
+                }
+                
                 setLoading(false);
             })
             .catch(err => {
@@ -25,7 +36,7 @@ const TuitionsDetails = () => {
                 setLoading(false);
             });
 
-        // Fetch User Role
+        // Fetch Logged-in User Role
         if (user?.email) {
             axios.get(`http://localhost:3000/users/role/${user.email}`)
                 .then(res => setRole(res.data.role));
@@ -34,21 +45,18 @@ const TuitionsDetails = () => {
 
     const handleApply = async () => {
         const token = localStorage.getItem('access-token');
-        
-        // Prepare the application data using EXACT values from the tuition object
         const applicationData = {
             tuitionId: tuition._id,
             tutorName: user?.displayName,
             tutorEmail: user?.email,
             studentEmail: tuition.studentEmail,
-            subject: tuition.subject, // Exact database subject
-            salary: tuition.salary,   // Exact database salary
+            subject: tuition.subject, 
+            salary: tuition.salary,   
             status: 'Pending',
             appliedDate: new Date()
         };
 
         try {
-            // Note: Ensure your backend has a POST route for /hiring-requests
             const res = await axios.post('http://localhost:3000/hiring-requests', applicationData, {
                 headers: { authorization: `Bearer ${token}` }
             });
@@ -57,12 +65,11 @@ const TuitionsDetails = () => {
                 navigate('/dashboard/my-applications');
             }
         } catch (error) {
-            toast.error("Application failed. You may have already applied.");
+            toast.error("Application failed. You may have already applied.", error.message);
         }
     };
 
     if (loading) return <div className="min-h-screen flex justify-center items-center"><span className="loading loading-spinner loading-lg text-orange-600"></span></div>;
-
     if (!tuition) return <div className="min-h-screen pt-40 text-center font-bold text-red-500 uppercase italic">Tuition Data Not Found!</div>;
 
     return (
@@ -115,14 +122,37 @@ const TuitionsDetails = () => {
                         </div>
                     </div>
 
-                    {/* Right Side: Action Card */}
-                    <div className="lg:col-span-1">
+                    {/* Right Side: Action Card & Student Profile */}
+                    <div className="lg:col-span-1 space-y-6">
+                        {/* Student Profile Card */}
+                        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
+                            <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-6">Posted By Student</h4>
+                            <Link to={`/student-profile/${tuition?.studentEmail}`} className="flex items-center gap-4 group">
+                                <div className="relative">
+                                    {studentInfo?.photoURL ? (
+                                        <img src={studentInfo.photoURL} alt="student" className="w-16 h-16 rounded-2xl object-cover ring-4 ring-slate-50 group-hover:ring-orange-100 transition-all shadow-md" />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-md">
+                                            <FaUserCircle size={40} />
+                                        </div>
+                                    )}
+                                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                                </div>
+                                <div className="overflow-hidden">
+                                    <h3 className="font-black text-slate-800 truncate group-hover:text-orange-600 transition-colors uppercase italic">{studentInfo?.name || "Student Name"}</h3>
+                                    <p className="text-[10px] font-bold text-slate-400 truncate uppercase">{tuition?.studentEmail}</p>
+                                    <span className="text-[9px] bg-slate-100 px-2 py-0.5 rounded-full font-black text-slate-500 uppercase mt-1 inline-block tracking-tighter">View Profile</span>
+                                </div>
+                            </Link>
+                        </div>
+
+                        {/* Salary & Action Card */}
                         <div className="bg-slate-900 rounded-[3rem] p-10 text-white sticky top-32 shadow-2xl overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
                             
                             <div className="relative z-10">
                                 <p className="text-orange-500 uppercase font-black tracking-[4px] text-[10px] mb-2">Monthly Budget</p>
-                                <h2 className="text-5xl font-black italic mb-8">${tuition.salary}</h2>
+                                <h2 className="text-5xl font-black italic mb-8">৳{tuition.salary}</h2>
 
                                 <div className="space-y-4 mb-10 border-t border-slate-800 pt-8">
                                     <div className="flex justify-between text-xs font-bold uppercase opacity-60">
