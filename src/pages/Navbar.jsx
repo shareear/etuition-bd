@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 const Navbar = () => {
     const { user, signOutUser } = useAuth();
     const navigate = useNavigate();
-    console.log(user);
+     (user);
     // NavLink items with active state styling
     const links = <>
             <li><NavLink to="/" className={({ isActive }) => isActive ? "text-primary font-bold" : "text-white"}>Home</NavLink></li>

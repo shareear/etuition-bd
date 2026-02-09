@@ -28,7 +28,7 @@ const Register = () => {
         const toastId = toast.loading("Connecting with Google...");
         signInWithGoogle()
             .then((result) => {
-                console.log(result.user)
+                 (result.user)
                 const user = result.user;
                 const userInfo = {
                     name: user?.displayName,
@@ -52,7 +52,7 @@ const Register = () => {
                         // --- JWT Generation End ---
                     })
                     .catch(err =>{
-                        console.log(err.message);
+                         (err.message);
                         toast.error(err.message)
                         return
                     });
@@ -70,13 +70,13 @@ const Register = () => {
         const toastId = toast.loading("Creating your account...");
         createUserWithEmail(data.email, data.password)
             .then((result) => {
-                console.log(result.user);
+                 (result.user);
                 const formData = new FormData();
                 formData.append('image', profileImg);
                 const imageAPIURL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_BB}`
                 axios.post(imageAPIURL, formData)
                     .then((res)=>{
-                        console.log("After Image Upload", res.data.data.url);
+                         ("After Image Upload", res.data.data.url);
                         const userProfile = {
                             displayName: data.name, photoURL: res.data.data.url
                         }
