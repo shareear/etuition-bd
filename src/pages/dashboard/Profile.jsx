@@ -20,7 +20,7 @@ const Profile = () => {
                 }
             })
                 .then(res => setProfileData(res.data))
-                .catch(err =>  (err));
+                .catch(err => console.log(err));
         }
     }, [user]);
 
