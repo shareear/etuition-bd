@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
-// Import your shared Logo component here
-// import Logo from "../shared/Logo";
-import { FaUser, FaUsers, FaBook, FaPlusCircle, FaHistory, FaChalkboardTeacher, FaDollarSign, FaHome } from "react-icons/fa";
+// Added FaFileAlt and FaClipboardList for a better visual fit
+import { FaUser, FaUsers, FaBook, FaPlusCircle, FaHistory, FaChalkboardTeacher, FaDollarSign, FaHome, FaFileAlt, FaClipboardList } from "react-icons/fa";
 import Logo from "../../components/shared/Logo";
 
 const DashboardLayout = () => {
@@ -66,8 +65,8 @@ const DashboardLayout = () => {
                     {role === 'tutor' && (
                         <>
                             <p className="hidden lg:block text-[10px] text-slate-500 uppercase font-black px-3 mb-2 tracking-widest">Tutor Portal</p>
-                            <li><NavLink to="/dashboard/my-applications" title="My Applications" className={({isActive}) => `flex items-center justify-center lg:justify-start gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaHistory /> <span className="hidden lg:block">My Applications</span></NavLink></li>
-                            <li><NavLink to="/dashboard/hiringrequest" title="Hiring Requests" className={({isActive}) => `flex items-center justify-center lg:justify-start gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaHistory /> <span className="hidden lg:block">Hiring Requests</span></NavLink></li>
+                            <li><NavLink to="/dashboard/my-applications" title="My Applications" className={({isActive}) => `flex items-center justify-center lg:justify-start gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaFileAlt /> <span className="hidden lg:block">My Applications</span></NavLink></li>
+                            <li><NavLink to="/dashboard/hiringrequest" title="Hiring Requests" className={({isActive}) => `flex items-center justify-center lg:justify-start gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaClipboardList /> <span className="hidden lg:block">Hiring Requests</span></NavLink></li>
                             <li><NavLink to="/dashboard/ongoing-tuitions" title="Ongoing Tuitions" className={({isActive}) => `flex items-center justify-center lg:justify-start gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaChalkboardTeacher /> <span className="hidden lg:block">Ongoing Tuitions</span></NavLink></li>
                             <li><NavLink to="/dashboard/revenue" title="Revenue History" className={({isActive}) => `flex items-center justify-center lg:justify-start gap-3 p-3 rounded-xl transition-all ${isActive ? 'bg-orange-600 text-white font-bold' : 'hover:bg-slate-800'}`}><FaDollarSign /> <span className="hidden lg:block">Revenue History</span></NavLink></li>
                         </>
