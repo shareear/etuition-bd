@@ -14,7 +14,7 @@ const StudentProfile = () => {
             try {
                 const token = localStorage.getItem('access-token');
                 // Note: Using your existing user-stats or a specific profile route
-                const response = await axios.get(`http://localhost:3000/user-stats/${studentId}`, {
+                const response = await axios.get(` https://etuition-bd-server.vercel.app/user-stats/${studentId}`, {
                     headers: { authorization: `Bearer ${token}` }
                 });
                 // Your backend returns { user, stats }. We need the user object.

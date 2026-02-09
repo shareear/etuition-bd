@@ -14,7 +14,7 @@ const StudentsDetails = () => {
         const fetchStudent = async () => {
             try {
                 // Public request - hitting the consolidated endpoint without headers
-                const response = await axios.get(`http://localhost:3000/user-stats/${studentId}`);
+                const response = await axios.get(` https://etuition-bd-server.vercel.app/user-stats/${studentId}`);
                 setStudent(response.data.user);
                 setLoading(false);
             } catch (error) {

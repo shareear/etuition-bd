@@ -7,7 +7,7 @@ const useAxios = () => {
 
     const axiosInstance = useMemo(() => {
         const instance = axios.create({
-            baseURL: 'http://localhost:3000',
+            baseURL: ' https://etuition-bd-server.vercel.app',
         });
 
         // ১. Request Interceptor: প্রতিটি রিকোয়েস্ট পাঠানোর আগে টোকেন যোগ করবে

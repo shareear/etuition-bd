@@ -48,7 +48,7 @@ const AuthProvider = ({children}) => {
             if (currentUser) {
                 // ইউজার থাকলে ব্যাকএন্ড থেকে টোকেন নিয়ে আসা
                 const userInfo = { email: currentUser.email };
-                axios.post('http://localhost:3000/jwt', userInfo)
+                axios.post(' https://etuition-bd-server.vercel.app/jwt', userInfo)
                     .then(res => {
                         if (res.data.token) {
                             localStorage.setItem('access-token', res.data.token);

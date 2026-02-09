@@ -46,7 +46,7 @@ const Login = () => {
         signInWithEmail(data.email, data.password)
             .then((result) => {
                 const loggedUser = { email: result.user.email };
-                axios.post('http://localhost:3000/jwt', loggedUser)
+                axios.post(' https://etuition-bd-server.vercel.app/jwt', loggedUser)
                     .then(res => {
                         if (res.data.token) {
                             localStorage.setItem('access-token', res.data.token);
@@ -77,7 +77,7 @@ const Login = () => {
 
                 // 2. Perform JWT generation in the background
                 const loggedUser = { email: result.user.email };
-                axios.post('http://localhost:3000/jwt', loggedUser)
+                axios.post(' https://etuition-bd-server.vercel.app/jwt', loggedUser)
                     .then(res => {
                         if (res.data.token) {
                             localStorage.setItem('access-token', res.data.token);

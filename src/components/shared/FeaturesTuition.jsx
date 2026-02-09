@@ -15,7 +15,7 @@ const FeaturedTuitions = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/tuitions')
+        axios.get(' https://etuition-bd-server.vercel.app/tuitions')
             .then(res => {
                 // লেটেস্ট ৬টি বা ৮টি টিউশন স্লাইডারে দেখানোর জন্য
                 setTuitions(res.data.slice(0, 8));

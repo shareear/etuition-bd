@@ -14,13 +14,13 @@ const OngoingTuitions = () => {
     const fetchOngoingJobs = useCallback(() => {
         if (user?.email) {
             const token = localStorage.getItem('access-token');
-            axios.get(`http://localhost:3000/users/role/${user.email}`)
+            axios.get(` https://etuition-bd-server.vercel.app/users/role/${user.email}`)
                 .then(res => {
                     const userRole = res.data.role;
                     setRole(userRole);
                     const endpoint = userRole === 'tutor' 
-                        ? `http://localhost:3000/tutor-ongoing/${user.email}`
-                        : `http://localhost:3000/hiring-requests-by-student/${user.email}`;
+                        ? ` https://etuition-bd-server.vercel.app/tutor-ongoing/${user.email}`
+                        : ` https://etuition-bd-server.vercel.app/hiring-requests-by-student/${user.email}`;
 
                     return axios.get(endpoint, {
                         headers: { authorization: `Bearer ${token}` }
@@ -56,7 +56,7 @@ const OngoingTuitions = () => {
             if (result.isConfirmed) {
                 try {
                     const token = localStorage.getItem('access-token');
-                    const res = await axios.delete(`http://localhost:3000/terminate-contract/${id}`, {
+                    const res = await axios.delete(` https://etuition-bd-server.vercel.app/terminate-contract/${id}`, {
                         data: { 
                             tutorEmail: job.tutorEmail, 
                             studentEmail: job.studentEmail, 
@@ -86,7 +86,7 @@ const OngoingTuitions = () => {
     const handleUpdateJob = async (id, updatedData) => {
         try {
             const token = localStorage.getItem('access-token');
-            const res = await axios.patch(`http://localhost:3000/update-tuition/${id}`, updatedData, {
+            const res = await axios.patch(` https://etuition-bd-server.vercel.app/update-tuition/${id}`, updatedData, {
                 headers: { authorization: `Bearer ${token}` }
             });
             if (res.data.modifiedCount > 0) {

@@ -10,7 +10,7 @@ const useRole = () => {
     useEffect(() => {
         if (user?.email) {
             // URL ঠিক করা হয়েছে এখানে
-            axios.get(`http://localhost:3000/users/role/${user.email}`)
+            axios.get(` https://etuition-bd-server.vercel.app/users/role/${user.email}`)
                 .then(res => {
                     setRole(res.data.role);
                     setRoleLoading(false);

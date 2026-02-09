@@ -16,14 +16,14 @@ const TuitionsDetails = () => {
 
     useEffect(() => {
         // Fetch Tuition Data
-        axios.get(`http://localhost:3000/tuition/${id}`)
+        axios.get(` https://etuition-bd-server.vercel.app/tuition/${id}`)
             .then(res => {
                 setTuition(res.data);
                 
                 // Fetch Student Profile Data using the email from tuition post
                 // FIX: Request made without headers to match the public backend route
                 if (res.data?.studentEmail) {
-                    axios.get(`http://localhost:3000/user-stats/${res.data.studentEmail}`)
+                    axios.get(` https://etuition-bd-server.vercel.app/user-stats/${res.data.studentEmail}`)
                         .then(userRes => setStudentInfo(userRes.data.user))
                         .catch(err => console.error("Error fetching student info:", err));
                 }
@@ -37,7 +37,7 @@ const TuitionsDetails = () => {
 
         // Fetch Logged-in User Role
         if (user?.email) {
-            axios.get(`http://localhost:3000/users/role/${user.email}`)
+            axios.get(` https://etuition-bd-server.vercel.app/users/role/${user.email}`)
                 .then(res => setRole(res.data.role));
         }
     }, [id, user]);
@@ -56,7 +56,7 @@ const TuitionsDetails = () => {
         };
 
         try {
-            const res = await axios.post('http://localhost:3000/hiring-requests', applicationData, {
+            const res = await axios.post(' https://etuition-bd-server.vercel.app/hiring-requests', applicationData, {
                 headers: { authorization: `Bearer ${token}` }
             });
             if (res.data.insertedId) {
