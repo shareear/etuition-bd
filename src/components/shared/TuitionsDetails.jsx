@@ -12,7 +12,7 @@ const TuitionsDetails = () => {
     const [tuition, setTuition] = useState(null);
     const [role, setRole] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [studentInfo, setStudentInfo] = useState(null); // Added state for Student Info
+    const [studentInfo, setStudentInfo] = useState(null);
 
     useEffect(() => {
         // Fetch Tuition Data
@@ -21,12 +21,11 @@ const TuitionsDetails = () => {
                 setTuition(res.data);
                 
                 // Fetch Student Profile Data using the email from tuition post
+                // FIX: Request made without headers to match the public backend route
                 if (res.data?.studentEmail) {
-                    axios.get(`http://localhost:3000/user-stats/${res.data.studentEmail}`, {
-                        headers: { authorization: `Bearer ${localStorage.getItem('access-token')}` }
-                    })
-                    .then(userRes => setStudentInfo(userRes.data.user))
-                    .catch(err => console.error("Error fetching student profile:", err));
+                    axios.get(`http://localhost:3000/user-stats/${res.data.studentEmail}`)
+                        .then(userRes => setStudentInfo(userRes.data.user))
+                        .catch(err => console.error("Error fetching student info:", err));
                 }
                 
                 setLoading(false);
@@ -65,7 +64,7 @@ const TuitionsDetails = () => {
                 navigate('/dashboard/my-applications');
             }
         } catch (error) {
-            toast.error("Application failed. You may have already applied.", error.message);
+            toast.error("Application failed. You may have already applied.");
         }
     };
 
@@ -124,13 +123,15 @@ const TuitionsDetails = () => {
 
                     {/* Right Side: Action Card & Student Profile */}
                     <div className="lg:col-span-1 space-y-6">
-                        {/* Student Profile Card */}
+                        {/* Student Profile Card - Dynamic Link added here */}
                         <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
                             <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-6">Posted By Student</h4>
-                            <Link to={`/student-profile/${tuition?.studentEmail}`} className="flex items-center gap-4 group">
+                            
+                            {/* UPDATED: Link points to students-details */}
+                            <Link to={`/students-details/${tuition?.studentEmail}`} className="flex items-center gap-4 group">
                                 <div className="relative">
-                                    {studentInfo?.photoURL ? (
-                                        <img src={studentInfo.photoURL} alt="student" className="w-16 h-16 rounded-2xl object-cover ring-4 ring-slate-50 group-hover:ring-orange-100 transition-all shadow-md" />
+                                    {studentInfo?.image || studentInfo?.photoURL ? (
+                                        <img src={studentInfo?.image || studentInfo?.photoURL} alt="student" className="w-16 h-16 rounded-2xl object-cover ring-4 ring-slate-50 group-hover:ring-orange-100 transition-all shadow-md" />
                                     ) : (
                                         <div className="w-16 h-16 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-md">
                                             <FaUserCircle size={40} />
@@ -141,7 +142,7 @@ const TuitionsDetails = () => {
                                 <div className="overflow-hidden">
                                     <h3 className="font-black text-slate-800 truncate group-hover:text-orange-600 transition-colors uppercase italic">{studentInfo?.name || "Student Name"}</h3>
                                     <p className="text-[10px] font-bold text-slate-400 truncate uppercase">{tuition?.studentEmail}</p>
-                                    <span className="text-[9px] bg-slate-100 px-2 py-0.5 rounded-full font-black text-slate-500 uppercase mt-1 inline-block tracking-tighter">View Profile</span>
+                                    <span className="text-[9px] bg-slate-100 px-2 py-0.5 rounded-full font-black text-slate-500 uppercase mt-1 inline-block tracking-tighter">View Details</span>
                                 </div>
                             </Link>
                         </div>

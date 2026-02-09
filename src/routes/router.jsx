@@ -31,6 +31,7 @@ import HiringRequests from "../pages/dashboard/HiringRequests";
 import StudentProfile from "../pages/profile/StudentProfile";
 import TutorProfile from "../pages/profile/TutorProfile";
 import PaymentHistory from "../pages/dashboard/PaymentHistory";
+import StudentsDetails from "../components/StudentsDetails";
 
 export const router = createBrowserRouter([
     {
@@ -38,38 +39,34 @@ export const router = createBrowserRouter([
         element: <RootLayout />,
         loader: () => {
             return new Promise((resolve) => {
-                setTimeout(() => resolve(), 2000); // Simulate loading time
+                setTimeout(() => resolve(), 2000); 
             });
         },
         children: [
-            {
-                path: "home",
-                element: <Home />,
-                loader: () => <Loader fullPage={true} />,
-            },
-            {
-                path: "about",
-                element: <About />,
-                loader: () => <Loader fullPage={true} />,
-            },
-            {
-                path: "contact",
-                element: <Contact />,
-                loader: () => <Loader fullPage={true} />,
-            },
             { index: true, Component: Home },
-            { path: "tuitions", Component: Tuitions },
-            { path: "tutors", Component: Tutors },
+            { path: "home", Component: Home },
             { path: "about", Component: About },
             { path: "contact", Component: Contact },
-            {path: "tuition/:id", // :id যোগ করা হয়েছে যাতে ডাইনামিক ইউআরএল কাজ করে
-                Component: TuitionsDetails},
-            {path: "/tutor-details/:id", // এখানে :id হলো ডায়নামিক প্যারামিটার
-                element: <TutorsDetails />}
+            { path: "tuitions", Component: Tuitions },
+            { path: "tutors", Component: Tutors },
+            
+            // --- Public Details Routes ---
+            { 
+                path: "tuition/:id", 
+                Component: TuitionsDetails 
+            },
+            { 
+                path: "tutor-details/:id", 
+                element: <TutorsDetails /> 
+            },
+            { 
+                // Using studentId for clarity, matching your previous logic
+                path: "students-details/:studentId", 
+                Component: StudentsDetails 
+            }
         ]
     },
     {
-        // লগইন ও রেজিস্ট্রেশনের জন্য আলাদা লেআউট
         path: "/", 
         Component: AuthLayout,
         children: [
@@ -77,42 +74,31 @@ export const router = createBrowserRouter([
             { path: "register", Component: Register },
         ]
     },
-// ... অন্যান্য ইমপোর্ট ঠিক থাকবে
+    {
+        path: "dashboard",
+        element: <PrivateRoutes><Dashboard/></PrivateRoutes>,
+        children: [
+            { index: true, element: <Profile /> }, 
+            { path: "profile", element: <Profile /> },
+            
+            // Student Routes
+            { path: "post-tuition", element: <PostTuitions /> },
+            { path: "my-posts", element: <MyPosts /> },
+            { path: "applied-tutors", element: <AppliedTutors/> },
+            { path: "payment/:id", element: <Payment /> }, 
 
-{
-    path: "dashboard",
-    element: <PrivateRoutes><Dashboard/></PrivateRoutes>,
-    children: [
-        { index: true, element: <Profile /> }, 
-        { path: "profile", element: <Profile /> },
-        
-        // Student Routes
-        { path: "post-tuition", element: <PostTuitions /> },
-        { path: "my-posts", element: <MyPosts /> },
-        { path: "applied-tutors", element: <AppliedTutors/>},
-        
-        // ফিক্সড পেমেন্ট রাউট: আইডি এবং ডাইনামিক প্যারামিটার সাপোর্ট করার জন্য
-        { path: "payment/:id", element: <Payment /> }, 
+            // Admin Routes
+            { path: "manage-users", element: <Manageusers /> },
+            { path: "manage-tuitions", element: <ManageTuitions /> },
+            { path: "analytics", element: <AdminAnalytics /> },
 
-        // Admin Routes
-        { path: "manage-users", element: <Manageusers /> },
-        { path: "manage-tuitions", element: <ManageTuitions /> },
-        { path: "analytics", element: <AdminAnalytics /> },
-
-        // Tutor Routes
-        { path: "my-applications", element: <MyApplications /> },
-        { path: "ongoing-tuitions", element: <OngoingTuitions /> },
-        { path: "revenue", element: <RevenueHistory /> },
-        { path: "hiringrequest", element: <HiringRequests/>},
-        {path: "payment-history", element: <PaymentHistory/>}
-    ]
-},
-{
-    path: "student-profile/:studentId",
-    element: <StudentProfile />,
-},
-{
-    path: "tutor-profile/:tutorId",
-    element: <TutorProfile />,
-}
+            // Tutor Routes
+            { path: "my-applications", element: <MyApplications /> },
+            { path: "ongoing-tuitions", element: <OngoingTuitions /> },
+            { path: "revenue", element: <RevenueHistory /> },
+            { path: "hiringrequest", element: <HiringRequests/> },
+            { path: "payment-history", element: <PaymentHistory/> }
+        ]
+    }
+    // Cleaned up the loose absolute paths at the bottom to avoid errors
 ]);
