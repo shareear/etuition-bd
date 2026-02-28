@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaGraduationCap, FaStar, FaMapMarkerAlt, FaSearch, FaMoneyBillWave, FaUniversity, FaUser, FaInfoCircle } from 'react-icons/fa';
 import { Link } from 'react-router';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Tutors = () => {
     const [tutors, setTutors] = useState([]);
@@ -21,9 +22,10 @@ const Tutors = () => {
                 const tutorList = res.data.filter(user => user.role === 'tutor');
                 setTutors(tutorList);
                 setFilteredTutors(tutorList);
+                // console.log(tutorList);
             })
             .catch(err => {
-                console.error("Fetch Error:", err);
+                toast.error(err.message);
             })
             .finally(() => {
                 setLoading(false);
@@ -124,7 +126,7 @@ const Tutors = () => {
                             {/* Tutor Image */}
                             <div className="relative h-60 overflow-hidden bg-slate-100">
                                 <img 
-                                    src={tutor.photoURL || "https://i.ibb.co/rt969V5/avatar.jpg"} 
+                                    src={tutor.image} 
                                     alt={tutor.name} 
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 />

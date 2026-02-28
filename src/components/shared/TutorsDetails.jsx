@@ -79,7 +79,7 @@ const handleHireRequest = async () => {
                     <div className="px-10 pb-10 flex flex-col md:flex-row items-end gap-8 -mt-20">
                         <div className="relative">
                             <img 
-                                src={tutor.photoURL || "https://i.ibb.co/rt969V5/avatar.jpg"} 
+                                src={tutor.image} 
                                 alt={tutor.name} 
                                 className="w-44 h-44 rounded-[2.5rem] object-cover border-8 border-white shadow-2xl"
                             />
