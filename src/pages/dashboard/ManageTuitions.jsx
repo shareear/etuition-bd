@@ -73,7 +73,7 @@ const MyPosts = () => {
 
     return (
         <div className="overflow-x-auto bg-white p-6 rounded-2xl shadow">
-            <h2 className="text-2xl font-bold mb-6 text-orange-600 uppercase italic">My Tuition Posts</h2>
+            <h2 className="text-2xl font-bold mb-6 text-orange-600 uppercase italic">Tuition Posts To Manage</h2>
             <table className="table w-full">
                 <thead className="bg-slate-100">
                     <tr className="uppercase text-xs text-slate-600">
