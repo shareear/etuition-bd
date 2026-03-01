@@ -8,7 +8,7 @@ const RatingSystem = ({ tutorId, onRatingSubmit }) => {
 
     const handleRatingSubmit = async () => {
         try {
-            const response = await axios.post(` https://etuition-bd-server.vercel.app//rate-tutor`, {
+            const response = await axios.post(` https://etuition-bd-server.vercel.app/rate-tutor`, {
                 tutorId,
                 rating
             });

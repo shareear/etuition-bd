@@ -15,7 +15,7 @@ const ManageUsers = () => {
             setIsFetching(true);
             const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
 
-            const res = await axios.get(' https://etuition-bd-server.vercel.app//users', {
+            const res = await axios.get(' https://etuition-bd-server.vercel.app/users', {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -38,7 +38,7 @@ const ManageUsers = () => {
         try {
             const token = localStorage.getItem('access-token'); // টোকেন সংগ্রহ
 
-            const res = await axios.patch(` https://etuition-bd-server.vercel.app//users/role/${id}`, 
+            const res = await axios.patch(` https://etuition-bd-server.vercel.app/users/role/${id}`, 
                 { role: newRole },
                 {
                     headers: {
@@ -63,7 +63,7 @@ const ManageUsers = () => {
             try {
                 const token = localStorage.getItem('access-token');
 
-                const res = await axios.delete(` https://etuition-bd-server.vercel.app//users/${id}`, {
+                const res = await axios.delete(` https://etuition-bd-server.vercel.app/users/${id}`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }

@@ -37,11 +37,11 @@ const Register = () => {
                     role: userType
                 }
 
-                axios.post(' https://etuition-bd-server.vercel.app//users', userInfo)
+                axios.post(' https://etuition-bd-server.vercel.app/users', userInfo)
                     .then(() =>{
                         // --- JWT Generation Start ---
                         const loggedUser = { email: user?.email };
-                        axios.post(' https://etuition-bd-server.vercel.app//jwt', loggedUser)
+                        axios.post(' https://etuition-bd-server.vercel.app/jwt', loggedUser)
                             .then(res => {
                                 if (res.data.token) {
                                     localStorage.setItem('access-token', res.data.token);
@@ -95,12 +95,12 @@ const Register = () => {
                                     ...(userType === 'tutor' ? {occupation: data.occupation} : {class: data.class}),
                                     createdAt: new Date().toISOString()
                                 };
-                                axios.post(' https://etuition-bd-server.vercel.app//users', userInfo)
+                                axios.post(' https://etuition-bd-server.vercel.app/users', userInfo)
                                     .then(dataResponse =>{
                                         if(dataResponse.data.insertedId){
                                             // --- JWT Generation Start ---
                                             const loggedUser = { email: data.email };
-                                            axios.post(' https://etuition-bd-server.vercel.app//jwt', loggedUser)
+                                            axios.post(' https://etuition-bd-server.vercel.app/jwt', loggedUser)
                                                 .then(resJwt => {
                                                     if (resJwt.data.token) {
                                                         localStorage.setItem('access-token', resJwt.data.token);

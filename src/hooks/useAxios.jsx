@@ -7,7 +7,7 @@ const useAxios = () => {
 
     const axiosInstance = useMemo(() => {
         const instance = axios.create({
-            baseURL: ' https://etuition-bd-server.vercel.app/',
+            baseURL: ' https://etuition-bd-server.vercel.app',
         });
 
         // console.log(instance);

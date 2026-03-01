@@ -15,7 +15,7 @@ const TutorProfile = () => {
                 // লোকাল স্টোরেজ থেকে টোকেন সংগ্রহ
                 const token = localStorage.getItem('access-token');
 
-                const response = await axios.get(` https://etuition-bd-server.vercel.app//tutor-profile/${tutorId}`, {
+                const response = await axios.get(` https://etuition-bd-server.vercel.app/tutor-profile/${tutorId}`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }

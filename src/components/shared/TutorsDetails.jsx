@@ -15,7 +15,7 @@ const TutorsDetails = () => {
 
     useEffect(() => {
         // সিঙ্গেল ইউজার/টিউটর ডাটা ফেচ করা
-        axios.get(` https://etuition-bd-server.vercel.app//users`)
+        axios.get(` https://etuition-bd-server.vercel.app/users`)
             .then(res => {
                 const found = res.data.find(u => u._id === id);
                 setTutor(found);
@@ -52,7 +52,7 @@ const handleHireRequest = async () => {
     const toastId = toast.loading("Sending application..."); // ইউজারকে ওয়েট করতে বলা
 
     try {
-        const res = await axios.post(' https://etuition-bd-server.vercel.app//applications', applicationData);
+        const res = await axios.post(' https://etuition-bd-server.vercel.app/applications', applicationData);
         
         if (res.data.insertedId) {
             toast.success(`Application sent to ${tutor.name}!`, { id: toastId });

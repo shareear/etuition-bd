@@ -20,7 +20,7 @@ const PostTuition = () => {
 
         try {
             const token = localStorage.getItem('access-token');
-            const res = await axios.post(' https://etuition-bd-server.vercel.app//tuitions', tuitionInfo, {
+            const res = await axios.post(' https://etuition-bd-server.vercel.app/tuitions', tuitionInfo, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }

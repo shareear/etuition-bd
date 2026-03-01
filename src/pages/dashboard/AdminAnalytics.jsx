@@ -9,7 +9,7 @@ const AdminAnalytics = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('access-token');
-        axios.get(' https://etuition-bd-server.vercel.app//admin/analytics', {
+        axios.get(' https://etuition-bd-server.vercel.app/admin/analytics', {
             headers: { authorization: `Bearer ${token}` }
         })
         .then(res => {

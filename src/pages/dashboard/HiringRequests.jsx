@@ -14,7 +14,7 @@ const HiringRequests = () => {
             // লোকাল স্টোরেজ থেকে টোকেন সংগ্রহ
             const token = localStorage.getItem('access-token');
 
-            axios.get(` https://etuition-bd-server.vercel.app//hiring-requests/${user?.email}`, {
+            axios.get(` https://etuition-bd-server.vercel.app/hiring-requests/${user?.email}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -35,7 +35,7 @@ const HiringRequests = () => {
             // আপডেট করার সময়ও টোকেন প্রয়োজন
             const token = localStorage.getItem('access-token');
 
-            const res = await axios.patch(` https://etuition-bd-server.vercel.app//hiring-requests/status/${id}`, 
+            const res = await axios.patch(` https://etuition-bd-server.vercel.app/hiring-requests/status/${id}`, 
                 { status: newStatus },
                 {
                     headers: {

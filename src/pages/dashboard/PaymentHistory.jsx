@@ -11,7 +11,7 @@ const ExpenseHistory = () => {
     const fetchExpenseData = useCallback(() => {
         if (user?.email) {
             const token = localStorage.getItem('access-token');
-            axios.get(` https://etuition-bd-server.vercel.app//student-expenses/${user?.email}`, {
+            axios.get(` https://etuition-bd-server.vercel.app/student-expenses/${user?.email}`, {
                 headers: { authorization: `Bearer ${token}` }
             })
             .then(res => {
