@@ -52,11 +52,7 @@ const handleHireRequest = async () => {
     const toastId = toast.loading("Sending application..."); // ইউজারকে ওয়েট করতে বলা
 
     try {
-        const res = await axios.post('https://etuition-bd-server.vercel.app/hiring-requests', applicationData, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        const res = await axios.post(' https://etuition-bd-server.vercel.app//applications', applicationData);
         
         if (res.data.insertedId) {
             toast.success(`Application sent to ${tutor.name}!`, { id: toastId });
