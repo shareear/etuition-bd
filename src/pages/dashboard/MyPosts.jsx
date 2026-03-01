@@ -12,13 +12,13 @@ const MyPosts = () => {
 
     useEffect(() => {
         if (user?.email) {
-            axios.get(`https://etuition-bd-server.vercel.app/tuitions?email=${user.email}`)
+            // ✅ MATCHED TO BACKEND: app.get('/tutions', ...) using email query
+            axios.get(`http://localhost:3000/tutions?email=${user.email}`)
                 .then(res => setMyPosts(res.data));
         }
     }, [user]);
 
     const handleDelete = (id) => {
-        // --- ADDED JWT TOKEN FOR VERIFICATION ---
         const token = localStorage.getItem('access-token');
         
         Swal.fire({
@@ -31,7 +31,8 @@ const MyPosts = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(` http://localhost:3000/tuitions/${id}`, {
+                // ✅ MATCHED TO BACKEND: app.delete('/tution/:id', ...)
+                axios.delete(`http://localhost:3000/tution/${id}`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -62,10 +63,10 @@ const MyPosts = () => {
     };
 
     const handleUpdate = () => {
-        // --- ADDED JWT TOKEN FOR VERIFICATION ---
         const token = localStorage.getItem('access-token');
 
-        axios.patch(` http://localhost:3000/tuitions/${editingPost._id}`, formData, {
+        // ✅ MATCHED TO BACKEND: app.patch('/tution/:id', ...)
+        axios.patch(`http://localhost:3000/tution/${editingPost._id}`, formData, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -73,9 +74,14 @@ const MyPosts = () => {
             .then(res => {
                 if (res.data.modifiedCount > 0) {
                     Swal.fire("Updated!", "Your post has been updated.", "success");
+                    // Sync the local state with updated data
                     setMyPosts(myPosts.map(post => post._id === editingPost._id ? { ...post, ...formData } : post));
                     setEditingPost(null);
                 }
+            })
+            .catch(err => {
+                console.error("Update error:", err);
+                Swal.fire("Error", "Could not update the post.", "error");
             });
     };
 
@@ -100,12 +106,12 @@ const MyPosts = () => {
                             <td>{post.class}</td>
                             <td>{post.salary}</td>
                             <td>{post.location}</td>
-                            <td>{post.status}</td>
+                            <td className="capitalize font-semibold">{post.status}</td>
                             <td>
                                 <button onClick={() => handleEdit(post)} className="btn btn-sm btn-warning mr-2">
                                     <FaEdit />
                                 </button>
-                                <button onClick={() => handleDelete(post._id)} className="btn btn-sm btn-danger">
+                                <button onClick={() => handleDelete(post._id)} className="btn btn-sm btn-error">
                                     <FaTrash />
                                 </button>
                             </td>
@@ -115,46 +121,54 @@ const MyPosts = () => {
             </table>
 
             {editingPost && (
-                <div className="mt-6">
+                <div className="mt-6 p-6 border border-slate-200 rounded-xl bg-slate-50">
                     <h3 className="text-xl font-bold mb-4">Edit Tuition Post</h3>
                     <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input
-                                type="text"
-                                name="subject"
-                                value={formData.subject}
-                                onChange={handleFormChange}
-                                placeholder="Subject"
-                                className="input input-bordered"
-                            />
-                            <input
-                                type="text"
-                                name="class"
-                                value={formData.class}
-                                onChange={handleFormChange}
-                                placeholder="Class"
-                                className="input input-bordered"
-                            />
-                            <input
-                                type="text"
-                                name="salary"
-                                value={formData.salary}
-                                onChange={handleFormChange}
-                                placeholder="Salary"
-                                className="input input-bordered"
-                            />
-                            <input
-                                type="text"
-                                name="location"
-                                value={formData.location}
-                                onChange={handleFormChange}
-                                placeholder="Location"
-                                className="input input-bordered"
-                            />
+                            <div className="form-control">
+                                <label className="label text-xs font-bold uppercase">Subject</label>
+                                <input
+                                    type="text"
+                                    name="subject"
+                                    value={formData.subject}
+                                    onChange={handleFormChange}
+                                    className="input input-bordered"
+                                />
+                            </div>
+                            <div className="form-control">
+                                <label className="label text-xs font-bold uppercase">Class</label>
+                                <input
+                                    type="text"
+                                    name="class"
+                                    value={formData.class}
+                                    onChange={handleFormChange}
+                                    className="input input-bordered"
+                                />
+                            </div>
+                            <div className="form-control">
+                                <label className="label text-xs font-bold uppercase">Salary</label>
+                                <input
+                                    type="number"
+                                    name="salary"
+                                    value={formData.salary}
+                                    onChange={handleFormChange}
+                                    className="input input-bordered"
+                                />
+                            </div>
+                            <div className="form-control">
+                                <label className="label text-xs font-bold uppercase">Location</label>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    value={formData.location}
+                                    onChange={handleFormChange}
+                                    className="input input-bordered"
+                                />
+                            </div>
                         </div>
-                        <div className="mt-4">
-                            <button type="submit" className="btn btn-primary mr-2">Update</button>
-                            <button onClick={() => setEditingPost(null)} className="btn btn-secondary">Cancel</button>
+                        <div className="mt-6">
+                            <button type="submit" className="btn btn-primary mr-2">Update Post</button>
+                            <button onClick={() => setEditingPost(null)} className="btn btn-ghost">Cancel</button>
                         </div>
                     </form>
                 </div>

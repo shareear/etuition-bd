@@ -7,9 +7,10 @@ const useAxios = () => {
 
     const axiosInstance = useMemo(() => {
         const instance = axios.create({
-            baseURL: ' http://localhost:3000///',
+            baseURL: ' http://localhost:3000',
         });
 
+        // console.log(instance);
         // ১. Request Interceptor: প্রতিটি রিকোয়েস্ট পাঠানোর আগে টোকেন যোগ করবে
         instance.interceptors.request.use(
             (config) => {
