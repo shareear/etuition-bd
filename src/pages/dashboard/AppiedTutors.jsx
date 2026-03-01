@@ -14,7 +14,7 @@ const AppliedTutors = () => {
     const fetchApplications = () => {
         if (user?.email) {
             const token = localStorage.getItem('access-token');
-            axios.get(` https://etuition-bd-server.vercel.app/hiring-requests-by-student/${user.email}`, {
+            axios.get(` http://localhost:3000/hiring-requests-by-student/${user.email}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -37,7 +37,7 @@ const AppliedTutors = () => {
     const handleApprove = async (id) => {
         try {
             const token = localStorage.getItem('access-token');
-            const res = await axios.patch(` https://etuition-bd-server.vercel.app/applications/status/${id}`, 
+            const res = await axios.patch(` http://localhost:3000/applications/status/${id}`, 
                 { status: 'approved' }, 
                 { headers: { authorization: `Bearer ${token}` } }
             );
@@ -69,7 +69,7 @@ const AppliedTutors = () => {
             if (result.isConfirmed) {
                 try {
                     const token = localStorage.getItem('access-token');
-                    const res = await axios.delete(` https://etuition-bd-server.vercel.app/applications/${id}`, {
+                    const res = await axios.delete(` http://localhost:3000/applications/${id}`, {
                         headers: { authorization: `Bearer ${token}` }
                     });
 

@@ -17,7 +17,7 @@ const MyApplications = () => {
             setLoading(true);
             const token = localStorage.getItem('access-token');
             // FIX: Changed endpoint to match the TUTOR'S email lookup
-            const res = await axios.get(` https://etuition-bd-server.vercel.app/hiring-requests-by-tutor/${user?.email}`, {
+            const res = await axios.get(` http://localhost:3000/hiring-requests-by-tutor/${user?.email}`, {
                 headers: { authorization: `Bearer ${token}` }
             });
             setApplications(res.data);
@@ -37,7 +37,7 @@ const MyApplications = () => {
         if (!window.confirm("Are you sure you want to withdraw this application?")) return;
         try {
             const token = localStorage.getItem('access-token');
-            const res = await axios.delete(` https://etuition-bd-server.vercel.app/cancel-tuition/${id}`, {
+            const res = await axios.delete(` http://localhost:3000/cancel-tuition/${id}`, {
                 headers: { authorization: `Bearer ${token}` }
             });
             if (res.data.deletedCount > 0) {
@@ -57,7 +57,7 @@ const MyApplications = () => {
     const handleUpdate = async () => {
         try {
             const token = localStorage.getItem('access-token');
-            const res = await axios.patch(` https://etuition-bd-server.vercel.app/update-tuition/${editingApp._id}`, formData, {
+            const res = await axios.patch(` http://localhost:3000/update-tuition/${editingApp._id}`, formData, {
                 headers: { authorization: `Bearer ${token}` }
             });
             if (res.data.modifiedCount > 0) {

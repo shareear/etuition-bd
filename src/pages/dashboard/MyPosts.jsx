@@ -12,7 +12,7 @@ const MyPosts = () => {
 
     useEffect(() => {
         if (user?.email) {
-            axios.get(` https://etuition-bd-server.vercel.app/tuitions?email=${user.email}`)
+            axios.get(`https://etuition-bd-server.vercel.app/tuitions?email=${user.email}`)
                 .then(res => setMyPosts(res.data));
         }
     }, [user]);
@@ -31,7 +31,7 @@ const MyPosts = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(` https://etuition-bd-server.vercel.app/tuitions/${id}`, {
+                axios.delete(` http://localhost:3000/tuitions/${id}`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -65,7 +65,7 @@ const MyPosts = () => {
         // --- ADDED JWT TOKEN FOR VERIFICATION ---
         const token = localStorage.getItem('access-token');
 
-        axios.patch(` https://etuition-bd-server.vercel.app/tuitions/${editingPost._id}`, formData, {
+        axios.patch(` http://localhost:3000/tuitions/${editingPost._id}`, formData, {
             headers: {
                 authorization: `Bearer ${token}`
             }

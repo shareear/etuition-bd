@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 const AdminPendingTuitions = () => {
     const [tuitions, setTuitions] = useState([]);
-    const API_BASE = "https://etuition-bd-server.vercel.app";
+    const API_BASE = "http://localhost:3000/";
     const token = localStorage.getItem('access-token');
 
     

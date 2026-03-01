@@ -14,7 +14,7 @@ const Profile = () => {
         if (user?.email) {
             const token = localStorage.getItem('access-token');
 
-            axios.get(` https://etuition-bd-server.vercel.app/user-stats/${user.email}`, {
+            axios.get(` http://localhost:3000/user-stats/${user.email}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }

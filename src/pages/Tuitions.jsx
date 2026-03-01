@@ -12,7 +12,7 @@ const AllTuitions = () => {
 
     useEffect(() => {
     // এখানে setLoading(true) করার দরকার নেই, কারণ useState(true) আগেই করা আছে।
-    axios.get(' https://etuition-bd-server.vercel.app/tuitions')
+    axios.get('https://etuition-bd-server.vercel.app/tuitions')
         .then(res => {
             // ড্যাটা চেক করে সেট করা
             if(res.data) {

@@ -27,7 +27,7 @@ const CheckoutForm = ({ appId, salary, tutorEmail, subject }) => {
             return;
         }
 
-        axios.post(" https://etuition-bd-server.vercel.app/create-payment-intent", 
+        axios.post(" http://localhost:3000/create-payment-intent", 
             { salary: salary },
             { 
                 headers: { 
@@ -90,7 +90,7 @@ const CheckoutForm = ({ appId, salary, tutorEmail, subject }) => {
 
             try {
                 const token = localStorage.getItem('access-token');
-                const res = await axios.post(" https://etuition-bd-server.vercel.app/payments", 
+                const res = await axios.post(" http://localhost:3000/payments", 
                     paymentInfo,
                     { headers: { authorization: `Bearer ${token}` } }
                 );
