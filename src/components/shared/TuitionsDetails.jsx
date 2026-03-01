@@ -16,14 +16,13 @@ const TuitionsDetails = () => {
 
     useEffect(() => {
         // Fetch Tuition Data
-        axios.get(` https://etuition-bd-server.vercel.app/tuition/${id}`)
+        axios.get(`https://etuition-bd-server.vercel.app/tuitions/${id}`) // ✅ FIXED (removed space)
             .then(res => {
                 setTuition(res.data);
                 
                 // Fetch Student Profile Data using the email from tuition post
-                // FIX: Request made without headers to match the public backend route
                 if (res.data?.studentEmail) {
-                    axios.get(` https://etuition-bd-server.vercel.app/user-stats/${res.data.studentEmail}`)
+                    axios.get(`https://etuition-bd-server.vercel.app/user-stats/${res.data.studentEmail}`) // ✅ FIXED
                         .then(userRes => setStudentInfo(userRes.data.user))
                         .catch(err => console.error("Error fetching student info:", err));
                 }
@@ -37,7 +36,7 @@ const TuitionsDetails = () => {
 
         // Fetch Logged-in User Role
         if (user?.email) {
-            axios.get(` https://etuition-bd-server.vercel.app/users/role/${user.email}`)
+            axios.get(`https://etuition-bd-server.vercel.app/users/role/${user.email}`) // ✅ FIXED
                 .then(res => setRole(res.data.role));
         }
     }, [id, user]);
@@ -56,7 +55,7 @@ const TuitionsDetails = () => {
         };
 
         try {
-            const res = await axios.post(' https://etuition-bd-server.vercel.app/hiring-requests', applicationData, {
+            const res = await axios.post('https://etuition-bd-server.vercel.app/hiring-requests', applicationData, { // ✅ FIXED
                 headers: { authorization: `Bearer ${token}` }
             });
             if (res.data.insertedId) {
@@ -64,7 +63,7 @@ const TuitionsDetails = () => {
                 navigate('/dashboard/my-applications');
             }
         } catch (error) {
-            toast.error("Application failed. You may have already applied.");
+            toast.error("Application failed. You may have already applied.", error.message);
         }
     };
 
@@ -123,11 +122,9 @@ const TuitionsDetails = () => {
 
                     {/* Right Side: Action Card & Student Profile */}
                     <div className="lg:col-span-1 space-y-6">
-                        {/* Student Profile Card - Dynamic Link added here */}
                         <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
                             <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-6">Posted By Student</h4>
                             
-                            {/* UPDATED: Link points to students-details */}
                             <Link to={`/students-details/${tuition?.studentEmail}`} className="flex items-center gap-4 group">
                                 <div className="relative">
                                     {studentInfo?.image || studentInfo?.photoURL ? (
@@ -147,7 +144,6 @@ const TuitionsDetails = () => {
                             </Link>
                         </div>
 
-                        {/* Salary & Action Card */}
                         <div className="bg-slate-900 rounded-[3rem] p-10 text-white sticky top-32 shadow-2xl overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
                             

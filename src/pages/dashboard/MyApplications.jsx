@@ -45,7 +45,7 @@ const MyApplications = () => {
                 setApplications(applications.filter(app => app._id !== id));
             }
         } catch (err) {
-            toast.error("Withdrawal failed.");
+            toast.error("Withdrawal failed.", err.message);
         }
     };
 
@@ -66,7 +66,7 @@ const MyApplications = () => {
                 setEditingApp(null);
             }
         } catch (err) {
-            toast.error("Update failed.");
+            toast.error("Update failed.", err.message);
         }
     };
 
