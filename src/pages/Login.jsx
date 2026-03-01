@@ -19,6 +19,9 @@ const Login = () => {
     const location = useLocation();
     const [forgotEmail, setForgotEmail] = useState("");
 
+    // Identify where the user came from (e.g., /tuitions) or default to Home
+    const from = location.state?.from?.pathname || location?.state || "/";
+
     const adminEmail = "admin@etuitionbd.com";
     const adminPass = "Fg123456";
 
@@ -40,53 +43,65 @@ const Login = () => {
             })
     }
 
+    // --- FIXED EMAIL/PASSWORD LOGIN ---
     const hadnleLogin = (data) => {
         const toastId = toast.loading("Logging in...");
         
         signInWithEmail(data.email, data.password)
             .then((result) => {
                 const loggedUser = { email: result.user.email };
-                axios.post(' http://localhost:3000/jwt', loggedUser)
+                
+                // Request JWT from backend
+                axios.post('http://localhost:3000/jwt', loggedUser)
                     .then(res => {
                         if (res.data.token) {
                             localStorage.setItem('access-token', res.data.token);
                             toast.success("Login Successful!", { id: toastId });
                             
+                            // Redirect Logic: Admin vs User
                             if (userType === 'admin' || data.email === adminEmail) {
-                                navigate("/dashboard/manage-tuitions");
+                                navigate("/dashboard/manage-tuitions", { replace: true });
                             } else {
-                                navigate(location?.state || "/");
+                                // Navigate to 'from' location (e.g., /tuitions) or Home
+                                navigate(from, { replace: true });
                             }
                         }
                     })
+                    .catch(err => {
+                        console.error("JWT Error:", err);
+                        toast.error("Session failed. Please try again.", { id: toastId });
+                    });
             })
             .catch((error) => {
                 console.error(error);
-                toast.error(error.message || "Login failed.", { id: toastId });
+                const errorMessage = error.code === 'auth/invalid-credential' 
+                    ? "Invalid email or password." 
+                    : "Login failed. Please try again.";
+                toast.error(errorMessage, { id: toastId });
             });
     };
 
-    // --- OPTIMIZED GOOGLE LOGIN ---
+    // --- FIXED GOOGLE LOGIN ---
     const handleGoogleLogin = () => {
         const toastId = toast.loading("Verifying identity...");
         
         signInWithGoogle()
             .then((result) => {
-                // 1. Redirect immediately for "Instant" feel
-                navigate(location?.state || "/",);
-
-                // 2. Perform JWT generation in the background
                 const loggedUser = { email: result.user.email };
-                axios.post(' http://localhost:3000/jwt', loggedUser)
+                
+                axios.post('http://localhost:3000/jwt', loggedUser)
                     .then(res => {
                         if (res.data.token) {
                             localStorage.setItem('access-token', res.data.token);
                             toast.success("Welcome back!", { id: toastId });
+                            
+                            // Redirect to where they were going or home
+                            navigate(from, { replace: true });
                         }
                     })
                     .catch(error => {
                         console.error("Background JWT Error:", error);
-                        toast.error("Session verification failed. Please refresh.", { id: toastId });
+                        toast.error("Session verification failed.", { id: toastId });
                     });
             })
             .catch((error) => {
@@ -197,7 +212,7 @@ const Login = () => {
 
                         {userType !== 'admin' && (
                             <div className="mt-4">
-                                <p>Don't have an account? <NavLink to="/register" state={location.state}><span className="text-primary font-bold text-[15px]">Register</span></NavLink></p>
+                                <p>Don't have an account? <NavLink to="/register" state={{ from }}><span className="text-primary font-bold text-[15px]">Register</span></NavLink></p>
                             </div>
                         )}
                     </motion.div>
