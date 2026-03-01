@@ -13,7 +13,7 @@ const RevenueHistory = () => {
             const token = localStorage.getItem('access-token');
             
             // API call to the new tutor-revenue endpoint
-            axios.get(` http://localhost:3000/tutor-revenue/${user?.email}`, {
+            axios.get(` https://etuition-bd-server.vercel.app//tutor-revenue/${user?.email}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }

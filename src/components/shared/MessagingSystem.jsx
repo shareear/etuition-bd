@@ -8,7 +8,7 @@ const MessagingSystem = ({ tutorId, studentId }) => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const response = await axios.get(` http://localhost:3000/messages?tutorId=${tutorId}&studentId=${studentId}`);
+                const response = await axios.get(` https://etuition-bd-server.vercel.app//messages?tutorId=${tutorId}&studentId=${studentId}`);
                 setMessages(response.data);
             } catch (error) {
                 console.error('Error fetching messages:', error);
@@ -20,7 +20,7 @@ const MessagingSystem = ({ tutorId, studentId }) => {
 
     const handleSendMessage = async () => {
         try {
-            const response = await axios.post(' http://localhost:3000/send-message', {
+            const response = await axios.post(' https://etuition-bd-server.vercel.app//send-message', {
                 tutorId,
                 studentId,
                 message: newMessage,

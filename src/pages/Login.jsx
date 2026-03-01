@@ -52,7 +52,7 @@ const Login = () => {
                 const loggedUser = { email: result.user.email };
                 
                 // Request JWT from backend
-                axios.post('http://localhost:3000/jwt', loggedUser)
+                axios.post('https://etuition-bd-server.vercel.app//jwt', loggedUser)
                     .then(res => {
                         if (res.data.token) {
                             localStorage.setItem('access-token', res.data.token);
@@ -89,7 +89,7 @@ const Login = () => {
             .then((result) => {
                 const loggedUser = { email: result.user.email };
                 
-                axios.post('http://localhost:3000/jwt', loggedUser)
+                axios.post('https://etuition-bd-server.vercel.app//jwt', loggedUser)
                     .then(res => {
                         if (res.data.token) {
                             localStorage.setItem('access-token', res.data.token);

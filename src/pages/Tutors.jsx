@@ -16,7 +16,7 @@ const Tutors = () => {
 
     // ১. ডাটা ফেচিং
     useEffect(() => {
-        axios.get(' http://localhost:3000/users')
+        axios.get(' https://etuition-bd-server.vercel.app//users')
             .then(res => {
                 // ডাটাবেজ থেকে শুধুমাত্র টিউটরদের আলাদা করা
                 const tutorList = res.data.filter(user => user.role === 'tutor');
