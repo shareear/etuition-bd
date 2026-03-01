@@ -16,13 +16,13 @@ const TuitionsDetails = () => {
 
     useEffect(() => {
         // ✅ CORRECTED ENDPOINT: Changed /tution to /tuitions
-        axios.get(`https://etuition-bd-server.vercel.app//tuition/${id}`) 
+        axios.get(`https://etuition-bd-server.vercel.app/tuitions/${id}`) 
             .then(res => {
                 setTuition(res.data);
                 
                 // ✅ FETCH STUDENT DATA: Uses your consolidated user-stats API
                 if (res.data?.studentEmail) {
-                    axios.get(`https://etuition-bd-server.vercel.app//user-stats/${res.data.studentEmail}`)
+                    axios.get(`https://etuition-bd-server.vercel.app/user-stats/${res.data.studentEmail}`)
                         .then(userRes => setStudentInfo(userRes.data.user))
                         .catch(err => console.error("Error fetching student info:", err));
                 }
@@ -36,7 +36,7 @@ const TuitionsDetails = () => {
 
         // ✅ CHECK USER ROLE: For "Apply" button visibility
         if (user?.email) {
-            axios.get(`https://etuition-bd-server.vercel.app//users/role/${user.email}`) 
+            axios.get(`https://etuition-bd-server.vercel.app/users/role/${user.email}`) 
                 .then(res => setRole(res.data.role));
         }
     }, [id, user]);
@@ -55,7 +55,7 @@ const TuitionsDetails = () => {
         };
 
         try {
-            const res = await axios.post('https://etuition-bd-server.vercel.app//hiring-requests', applicationData, { 
+            const res = await axios.post('https://etuition-bd-server.vercel.app/hiring-requests', applicationData, { 
                 headers: { authorization: `Bearer ${token}` }
             });
             if (res.data.insertedId) {
@@ -63,7 +63,7 @@ const TuitionsDetails = () => {
                 navigate('/dashboard/my-applications');
             }
         } catch (error) {
-            toast.error("Application failed. You may have already applied.");
+            toast.error("Application failed. You may have already applied.", error.message);
         }
     };
 

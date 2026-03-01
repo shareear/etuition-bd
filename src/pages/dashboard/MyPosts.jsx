@@ -13,7 +13,7 @@ const MyPosts = () => {
     useEffect(() => {
         if (user?.email) {
             // ✅ MATCHED TO BACKEND: app.get('/tutions', ...) using email query
-            axios.get(`https://etuition-bd-server.vercel.app//tutions?email=${user.email}`)
+            axios.get(`https://etuition-bd-server.vercel.app/tuitions?email=${user.email}`)
                 .then(res => setMyPosts(res.data));
         }
     }, [user]);
@@ -32,7 +32,7 @@ const MyPosts = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 // ✅ MATCHED TO BACKEND: app.delete('/tution/:id', ...)
-                axios.delete(`https://etuition-bd-server.vercel.app//tution/${id}`, {
+                axios.delete(`https://etuition-bd-server.vercel.app/tuitions/${id}`, {
                     headers: {
                         authorization: `Bearer ${token}`
                     }
@@ -66,7 +66,7 @@ const MyPosts = () => {
         const token = localStorage.getItem('access-token');
 
         // ✅ MATCHED TO BACKEND: app.patch('/tution/:id', ...)
-        axios.patch(`https://etuition-bd-server.vercel.app//tution/${editingPost._id}`, formData, {
+        axios.patch(`https://etuition-bd-server.vercel.app/tuitions/${editingPost._id}`, formData, {
             headers: {
                 authorization: `Bearer ${token}`
             }

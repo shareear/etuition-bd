@@ -17,6 +17,7 @@ const CheckoutForm = ({ appId, salary, tutorEmail, subject }) => {
 
     useEffect(() => {
         if (!salary || typeof salary !== 'number' || salary <= 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setCardError("Invalid payment amount detected.");
             return;
         }

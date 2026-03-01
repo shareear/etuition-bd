@@ -48,7 +48,7 @@ const RevenueHistory = () => {
             </header>
 
             {/* Total Earnings Card */}
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-4xl p-8 lg:p-12 text-white mb-10 shadow-xl relative overflow-hidden">
+            <div className="bg-linear-to-r from-orange-500 to-orange-600 rounded-4xl p-8 lg:p-12 text-white mb-10 shadow-xl relative overflow-hidden">
                 <div className="relative z-10">
                     <p className="uppercase text-xs font-black tracking-[4px] opacity-80 mb-2">Net Income</p>
                     <h1 className="text-5xl lg:text-7xl font-black italic flex items-center">
