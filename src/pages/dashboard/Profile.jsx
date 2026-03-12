@@ -13,23 +13,7 @@ const Profile = () => {
     const [formData, setFormData] = useState({});
 
 
-    const handleUpdateProfile = async (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem('access-token');
 
-        try {
-            const res = await axios.patch(
-                `https://etuition-bd-server.vercel.app/users/profile/${user.email}`, formData,
-                { headers: { authorization: `Bearer ${token}` } }
-            );
-
-            if (res.data.modifiedCount > 0) {
-                toast.success("Profile Updated Successfully");
-            };
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to update profile");
-        }
-    };
 
     useEffect(() => {
         if (user?.email) {
@@ -47,6 +31,35 @@ const Profile = () => {
                 .catch(err => console.log(err));
         }
     }, [user]);
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('access-token');
+
+        try {
+            const res = await axios.patch(
+                `https://etuition-bd-server.vercel.app/users/profile/${user.email}`, formData,
+                { headers: { authorization: `Bearer ${token}` } }
+            );
+
+            if (res.data.modifiedCount > 0) {
+                toast.success("Profile Updated Successfully");
+
+                setProfileData(prev => ({
+                    ...prev,
+                    user: { ...prev.user, ...formData }
+                }));
+
+                setIsEditing(false);
+            } else {
+                toast.info("No Changes Detected");
+                setIsEditing(false);
+            };
+
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to update profile");
+        };
+    };
 
     const handleLogOut = () => {
         signOutUser().then(() => {
