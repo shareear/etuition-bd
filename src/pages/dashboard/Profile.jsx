@@ -9,6 +9,27 @@ const Profile = () => {
     const { user, signOutUser } = useAuth();
     const [profileData, setProfileData] = useState(null);
     const navigate = useNavigate();
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({});
+
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('access-token');
+
+        try {
+            const res = await axios.patch(
+                `https://etuition-bd-server.vercel.app/users/profile/${user.email}`, formData,
+                { headers: { authorization: `Bearer ${token}` } }
+            );
+
+            if (res.data.modifiedCount > 0) {
+                toast.success("Profile Updated Successfully");
+            };
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to update profile");
+        }
+    };
 
     useEffect(() => {
         if (user?.email) {
@@ -19,7 +40,10 @@ const Profile = () => {
                     authorization: `Bearer ${token}`
                 }
             })
-                .then(res => setProfileData(res.data))
+                .then(res => {
+                    setProfileData(res.data);
+                    setFormData(res.data.user);
+                })
                 .catch(err => console.log(err));
         }
     }, [user]);
@@ -40,22 +64,23 @@ const Profile = () => {
             {/* Header / User Basic Info */}
             <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 flex flex-col md:flex-row items-center gap-8 mb-8">
                 <div className="relative">
-                    <img 
-                        src={dbUser?.image || user?.photoURL || "https://via.placeholder.com/150"} 
-                        alt="Profile" 
+                    <img
+                        src={dbUser?.image || user?.photoURL || "https://via.placeholder.com/150"}
+                        alt="Profile"
                         className="w-32 h-32 rounded-3xl object-cover ring-4 ring-orange-50 shadow-lg"
                     />
                     <span className="absolute -bottom-2 -right-2 bg-green-500 text-white text-[10px] px-2 py-1 rounded-lg font-bold uppercase tracking-wider">
                         {dbUser?.role}
                     </span>
                 </div>
-                
+
                 <div className="flex-1 text-center md:text-left">
                     <h1 className="text-3xl font-black text-slate-800 uppercase italic leading-none mb-2">{dbUser?.name}</h1>
                     <div className="flex flex-wrap justify-center md:justify-start gap-4 text-slate-500 text-sm">
-                        <span className="flex items-center gap-1"><FaEnvelope className="text-orange-500"/> {dbUser?.email}</span>
-                        {dbUser?.phone && <span className="flex items-center gap-1"><FaPhone className="text-orange-500"/> {dbUser?.phone}</span>}
+                        <span className="flex items-center gap-1"><FaEnvelope className="text-orange-500" /> {dbUser?.email}</span>
+                        {dbUser?.phone && <span className="flex items-center gap-1"><FaPhone className="text-orange-500" /> {dbUser?.phone}</span>}
                     </div>
+                    <button onClick={() => setIsEditing(true)} className="px-5 py-3 rounded-md text-xl bg-orange-500 text-white hover:bg-orange-600 transition-colors cursor-pointer m-5">Edit Profile</button>
                 </div>
 
                 <button onClick={handleLogOut} className="btn btn-outline btn-error rounded-xl gap-2 font-bold uppercase text-xs">
@@ -65,9 +90,9 @@ const Profile = () => {
 
             {/* Role-Based Stats Cards */}
             <h3 className="text-xl font-black text-slate-800 mb-6 uppercase italic flex items-center gap-2">
-                <FaChartLine className="text-orange-600"/> Platform Overview
+                <FaChartLine className="text-orange-600" /> Platform Overview
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Admin View */}
                 {dbUser?.role === 'admin' && (
@@ -107,6 +132,47 @@ const Profile = () => {
                     <FaUserTag size={120} />
                 </div>
             </div>
+
+            {isEditing && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+                        <h2 className="text-2xl font-black uppercase italic mb-6">Edit <span className="text-orange-600">Profile</span></h2>
+                        <form onSubmit={handleUpdateProfile} className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="form-control">
+                                    <label className="label-text font-bold mb-1">Full Name</label>
+                                    <input type="text" value={formData.name || ''} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="input input-bordered rounded-xl" />
+                                </div>
+                                <div className="form-control">
+                                    <label className="label-text font-bold mb-1">Phone</label>
+                                    <input type="text" value={formData.phone || ''} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="input input-bordered rounded-xl" />
+                                </div>
+                            </div>
+
+                            <div className="form-control">
+                                <label className="label-text font-bold mb-1">Institution</label>
+                                <input type="text" value={formData.institution || ''} onChange={(e) => setFormData({ ...formData, institution: e.target.value })} className="input input-bordered rounded-xl" />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="form-control">
+                                    <label className="label-text font-bold mb-1">Address</label>
+                                    <input type="text" value={formData.address || ''} onChange={(e) => setFormData({ ...formData, address: e.target.value })} className="input input-bordered rounded-xl" />
+                                </div>
+                                <div className="form-control">
+                                    <label className="label-text font-bold mb-1">Class/Level</label>
+                                    <input type="text" value={formData.class || ''} onChange={(e) => setFormData({ ...formData, class: e.target.value })} className="input input-bordered rounded-xl" />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4 mt-8">
+                                <button type="submit" className="flex-1 bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition-colors">Save Changes</button>
+                                <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
