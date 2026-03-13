@@ -5,6 +5,8 @@ import HowItWorks from '../components/HowItWorks';
 import StatsCounter from '../components/Stats';
 import Brands from '../components/Brands';
 import FeaturedTuitions from '../components/shared/FeaturesTuition';
+import FeedBack from '../components/FeedBack';
+import FeaturedTutors from '../components/FeaturedTutors';
 // import PopularTutors from '../components/Tutors';
 
 const Home = () => {
@@ -13,7 +15,9 @@ const Home = () => {
             <Banner></Banner>
             <FeaturedTuitions></FeaturedTuitions>
             <StatsCounter></StatsCounter>
+            <FeaturedTutors></FeaturedTutors>
             <HowItWorks></HowItWorks>
+            <FeedBack></FeedBack>
             <Brands></Brands>
         </div>
     );
