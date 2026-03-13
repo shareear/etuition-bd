@@ -6,20 +6,18 @@ import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
-    const { user, signOutUser } = useAuth();
+    const { user, signOutUser, resetPassword, updateUserProfile } = useAuth(); // Added resetPassword here
     const [profileData, setProfileData] = useState(null);
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({});
-
-
-
+    const [uploading, setUploading] = useState(false); // Added for image upload state
 
     useEffect(() => {
         if (user?.email) {
             const token = localStorage.getItem('access-token');
 
-            axios.get(` https://etuition-bd-server.vercel.app/user-stats/${user.email}`, {
+            axios.get(`https://etuition-bd-server.vercel.app/user-stats/${user.email}`, {
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -32,9 +30,39 @@ const Profile = () => {
         }
     }, [user]);
 
+    // New function for Image Upload
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const toastId = toast.loading("Uploading image...");
+        const imageFormData = new FormData();
+        imageFormData.append('image', file);
+
+        try {
+            const res = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_BB}`, imageFormData);
+            if (res.data.success) {
+                setFormData({ ...formData, image: res.data.data.url });
+                toast.success("Image uploaded! Save to apply.", { id: toastId });
+            }
+        } catch (err) {
+            toast.error(err.message || "Image upload failed", { id: toastId });
+        }
+    };
+
+    // New function for Password Reset
+    const handlePasswordReset = () => {
+        resetPassword(user.email)
+            .then(() => {
+                toast.success("Password reset email sent!");
+            })
+            .catch(err => toast.error(err.message));
+    };
+
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('access-token');
+        setUploading(true); // Start loading
 
         try {
             const res = await axios.patch(
@@ -43,6 +71,14 @@ const Profile = () => {
             );
 
             if (res.data.modifiedCount > 0) {
+
+                if(formData.image || formData.name){
+                    await updateUserProfile({
+                        displayName: formData.name,
+                        photoURL: formData.image
+                    })
+                };
+                
                 toast.success("Profile Updated Successfully");
 
                 setProfileData(prev => ({
@@ -58,7 +94,9 @@ const Profile = () => {
 
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to update profile");
-        };
+        } finally {
+            setUploading(false); // Stop loading
+        }
     };
 
     const handleLogOut = () => {
@@ -151,6 +189,16 @@ const Profile = () => {
                     <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
                         <h2 className="text-2xl font-black uppercase italic mb-6">Edit <span className="text-orange-600">Profile</span></h2>
                         <form onSubmit={handleUpdateProfile} className="space-y-4">
+                            
+                            {/* Image Section */}
+                            <div className="form-control mb-4">
+                                <label className="label-text font-bold mb-1">Update Profile Photo</label>
+                                <div className="flex items-center gap-4">
+                                    <img src={formData.image || dbUser?.image} className="w-12 h-12 rounded-xl object-cover ring-2 ring-orange-500" alt="preview" />
+                                    <input type="file" onChange={handleImageUpload} className="file-input file-input-bordered file-input-xs w-full rounded-lg" />
+                                </div>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="form-control">
                                     <label className="label-text font-bold mb-1">Full Name</label>
@@ -172,11 +220,19 @@ const Profile = () => {
                                     <label className="label-text font-bold mb-1">Address</label>
                                     <input type="text" value={formData.address || ''} onChange={(e) => setFormData({ ...formData, address: e.target.value })} className="input input-bordered rounded-xl" />
                                 </div>
-                                
+                            </div>
+
+                            {/* Password Section */}
+                            <div className="pt-4 border-t border-slate-100">
+                                <button type="button" onClick={handlePasswordReset} className="text-orange-600 font-bold text-sm hover:underline">
+                                    Send Password Reset Email
+                                </button>
                             </div>
 
                             <div className="flex gap-4 mt-8">
-                                <button type="submit" className="flex-1 bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition-colors cursor-pointer">Save Changes</button>
+                                <button type="submit" className="flex-1 bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition-colors cursor-pointer disabled:bg-slate-400" disabled={uploading}>
+                                    {uploading ? "Processing..." : "Save Changes"}
+                                </button>
                                 <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold cursor-pointer">Cancel</button>
                             </div>
                         </form>
