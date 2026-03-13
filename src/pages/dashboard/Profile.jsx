@@ -172,15 +172,12 @@ const Profile = () => {
                                     <label className="label-text font-bold mb-1">Address</label>
                                     <input type="text" value={formData.address || ''} onChange={(e) => setFormData({ ...formData, address: e.target.value })} className="input input-bordered rounded-xl" />
                                 </div>
-                                <div className="form-control">
-                                    <label className="label-text font-bold mb-1">Class/Level</label>
-                                    <input type="text" value={formData.class || ''} onChange={(e) => setFormData({ ...formData, class: e.target.value })} className="input input-bordered rounded-xl" />
-                                </div>
+                                
                             </div>
 
                             <div className="flex gap-4 mt-8">
-                                <button type="submit" className="flex-1 bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition-colors">Save Changes</button>
-                                <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold">Cancel</button>
+                                <button type="submit" className="flex-1 bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition-colors cursor-pointer">Save Changes</button>
+                                <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold cursor-pointer">Cancel</button>
                             </div>
                         </form>
                     </div>
