@@ -50,7 +50,7 @@ const FeedBack = () => {
 
             <Swiper
                 loop={true}
-                speed={6000}
+                speed={3000}
                 freeMode={true}
                 slidesPerView={1}
                 spaceBetween={20}

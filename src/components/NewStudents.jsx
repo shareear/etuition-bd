@@ -46,7 +46,7 @@ const NewStudents = () => {
                     slidesPerView={1.5}
                     spaceBetween={20}
                     loop={true}
-                    speed={5000} // Smooth continuous flow
+                    speed={3000} // Smooth continuous flow
                     freeMode={true}
                     autoplay={{
                         delay: 0,
