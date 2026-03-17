@@ -25,9 +25,11 @@ const Brands = () => {
     ];
 
     return (
-        <section className="py-10 bg-white border-y border-slate-50">
+        <section className="py-10 bg-base-100 border-y border-base-300 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-6">
-                <h1 className="text-2xl font-bold text-center mb-8">We are <span className="text-primary">Featured</span> in:</h1>
+                <h1 className="text-2xl font-bold text-center mb-8 text-base-content">
+                    We are <span className="text-primary font-black uppercase italic">Featured</span> in:
+                </h1>
                 <Swiper
                     modules={[Autoplay]}
                     spaceBetween={50}
@@ -59,6 +61,7 @@ const Brands = () => {
                     ))}
                 </Swiper>
             </div>
+
             
             {/* Global CSS for the Linear Ticker effect */}
             <style jsx global>{`

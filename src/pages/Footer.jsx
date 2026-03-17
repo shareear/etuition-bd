@@ -15,7 +15,7 @@ import Logo from '../components/shared/Logo';
 
 const Footer = () => {
     return (
-        <footer className="bg-slate-900 text-slate-300">
+        <footer className="bg-base-200 text-base-content/80 transition-colors duration-300">
             {/* Main Footer Content */}
             <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                 
@@ -28,16 +28,16 @@ const Footer = () => {
                     </p>
                     {/* Social Media Icons */}
                     <div className="flex gap-4">
-                        <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
+                        <a href="#" className="w-10 h-10 rounded-full bg-base-300 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
                             <FaFacebookF />
                         </a>
-                        <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
+                        <a href="#" className="w-10 h-10 rounded-full bg-base-300 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
                             <FaLinkedinIn />
                         </a>
-                        <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
+                        <a href="#" className="w-10 h-10 rounded-full bg-base-300 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
                             <FaXTwitter />
                         </a>
-                        <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
+                        <a href="#" className="w-10 h-10 rounded-full bg-base-300 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
                             <FaYoutube />
                         </a>
                     </div>
@@ -45,7 +45,7 @@ const Footer = () => {
 
                 {/* Column 2: Quick Navigation */}
                 <div>
-                    <h3 className="text-white font-bold text-lg mb-6 relative inline-block">
+                    <h3 className="text-base-content font-bold text-lg mb-6 relative inline-block">
                         Quick Links
                         <span className="absolute -bottom-2 left-0 w-12 h-1 bg-orange-600 rounded-full"></span>
                     </h3>
@@ -59,7 +59,7 @@ const Footer = () => {
 
                 {/* Column 3: Contact Info */}
                 <div>
-                    <h3 className="text-white font-bold text-lg mb-6 relative inline-block">
+                    <h3 className="text-base-content font-bold text-lg mb-6 relative inline-block">
                         Contact Us
                         <span className="absolute -bottom-2 left-0 w-12 h-1 bg-orange-600 rounded-full"></span>
                     </h3>
@@ -81,7 +81,7 @@ const Footer = () => {
 
                 {/* Column 4: Newsletter */}
                 <div>
-                    <h3 className="text-white font-bold text-lg mb-6 relative inline-block">
+                    <h3 className="text-base-content font-bold text-lg mb-6 relative inline-block">
                         Newsletter
                         <span className="absolute -bottom-2 left-0 w-12 h-1 bg-orange-600 rounded-full"></span>
                     </h3>
@@ -90,7 +90,7 @@ const Footer = () => {
                         <input 
                             type="email" 
                             placeholder="Your Email Address" 
-                            className="input input-bordered bg-slate-800 border-slate-700 focus:border-orange-500 focus:outline-none text-white w-full" 
+                            className="input input-bordered bg-base-100 border-base-300 focus:border-orange-500 focus:outline-none text-base-content w-full" 
                         />
                         <button className="btn bg-orange-600 hover:bg-orange-700 border-none text-white w-full font-bold">
                             Subscribe Now
@@ -100,8 +100,8 @@ const Footer = () => {
             </div>
 
             {/* Bottom Bar */}
-            <div className="border-t border-slate-800 bg-slate-950/40">
-                <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+            <div className="border-t border-base-300 bg-base-300/20">
+                <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-black uppercase tracking-tighter">
                     <p>© {new Date().getFullYear()} eTuitionBd. All rights reserved.</p>
                     <div className="flex gap-6 uppercase tracking-widest">
                         <a href="#" className="hover:text-orange-500 transition-colors">Privacy Policy</a>

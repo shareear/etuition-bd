@@ -37,7 +37,7 @@ const RatingSystem = ({ tutorId, onRatingSubmit }) => {
                                 className="hidden"
                             />
                             <FaStar
-                                className={`cursor-pointer text-2xl ${ratingValue <= (hover || rating) ? 'text-yellow-500' : 'text-gray-300'}`}
+                                className={`cursor-pointer text-2xl transition-colors ${ratingValue <= (hover || rating) ? 'text-yellow-500' : 'text-base-content/20'}`}
                                 onMouseEnter={() => setHover(ratingValue)}
                                 onMouseLeave={() => setHover(null)}
                             />

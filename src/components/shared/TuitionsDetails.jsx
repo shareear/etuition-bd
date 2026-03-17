@@ -71,65 +71,65 @@ const TuitionsDetails = () => {
     if (!tuition) return <div className="min-h-screen pt-40 text-center font-bold text-red-500 uppercase italic">Tuition Data Not Found!</div>;
 
     return (
-        <div className="bg-slate-50 min-h-screen pt-32 pb-20 px-4">
+        <div className="bg-base-200 min-h-screen pt-32 pb-20 px-4 transition-colors duration-300">
             <div className="max-w-6xl mx-auto">
-                <Link to="/tuitions" className="inline-flex items-center gap-2 text-slate-500 hover:text-orange-600 font-black uppercase text-xs mb-8 transition-all">
+                <Link to="/tuitions" className="inline-flex items-center gap-2 text-base-content/40 hover:text-orange-600 font-black uppercase text-xs mb-8 transition-all">
                     <FaArrowLeft /> Back to Listings
                 </Link>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     {/* Left Side: Information */}
                     <div className="lg:col-span-2 space-y-8">
-                        <div className="bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100">
+                        <div className="bg-base-100 rounded-[3rem] p-10 shadow-sm border border-base-300 transition-colors duration-300">
                             <div className="flex gap-4 mb-6">
                                 <span className="badge badge-success text-white font-bold uppercase text-[10px] py-3 px-4">{tuition.status}</span>
-                                <span className="flex items-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+                                <span className="flex items-center gap-2 text-base-content/40 font-bold text-[10px] uppercase tracking-widest">
                                     <FaCalendarAlt /> {tuition.postedDate ? new Date(tuition.postedDate).toLocaleDateString() : 'Recently'}
                                 </span>
                             </div>
 
-                            <h1 className="text-4xl md:text-5xl font-black text-slate-900 uppercase italic mb-6 leading-tight">
+                            <h1 className="text-4xl md:text-5xl font-black text-base-content uppercase italic mb-6 leading-tight">
                                 {tuition.subject} <span className="text-orange-600">Teacher Required</span>
                             </h1>
 
-                            <div className="bg-slate-50 p-6 rounded-3xl border-l-8 border-orange-500 mb-8">
-                                <h4 className="flex items-center gap-2 font-black uppercase text-sm text-slate-700 mb-2">
+                            <div className="bg-base-200 p-6 rounded-3xl border-l-8 border-orange-500 mb-8 transition-colors duration-300">
+                                <h4 className="flex items-center gap-2 font-black uppercase text-sm text-base-content/70 mb-2">
                                     <FaInfoCircle /> Job Description
                                 </h4>
-                                <p className="text-slate-600 leading-relaxed font-medium">
+                                <p className="text-base-content/60 leading-relaxed font-medium">
                                     {tuition.description || `Seeking a qualified tutor for ${tuition.subject}. This position requires someone dedicated to student success and clear communication.`}
                                 </p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="flex items-center gap-4 p-6 bg-slate-50 rounded-2xl">
+                                <div className="flex items-center gap-4 p-6 bg-base-200 rounded-2xl transition-colors duration-300">
                                     <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-lg"><FaUserGraduate size={20}/></div>
                                     <div>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase">Class</p>
-                                        <p className="font-black text-slate-800 text-lg uppercase italic">{tuition.class}</p>
+                                        <p className="text-[10px] font-black text-base-content/40 uppercase">Class</p>
+                                        <p className="font-black text-base-content/80 text-lg uppercase italic">{tuition.class}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4 p-6 bg-slate-50 rounded-2xl">
+                                <div className="flex items-center gap-4 p-6 bg-base-200 rounded-2xl transition-colors duration-300">
                                     <div className="w-12 h-12 bg-orange-600 text-white rounded-xl flex items-center justify-center shadow-lg"><FaMapMarkerAlt size={20}/></div>
                                     <div>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase">Location</p>
-                                        <p className="font-black text-slate-800 text-lg uppercase italic">{tuition.location}</p>
+                                        <p className="text-[10px] font-black text-base-content/40 uppercase">Location</p>
+                                        <p className="font-black text-base-content/80 text-lg uppercase italic">{tuition.location}</p>
                                     </div>
                                 </div>
                                 {/* NEW: Institution Info from Database */}
-                                <div className="flex items-center gap-4 p-6 bg-slate-50 rounded-2xl">
+                                <div className="flex items-center gap-4 p-6 bg-base-200 rounded-2xl transition-colors duration-300">
                                     <div className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg"><FaSchool size={20}/></div>
                                     <div>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase">Institution</p>
-                                        <p className="font-black text-slate-800 text-lg uppercase italic">{studentInfo?.institution || "Not Specified"}</p>
+                                        <p className="text-[10px] font-black text-base-content/40 uppercase">Institution</p>
+                                        <p className="font-black text-base-content/80 text-lg uppercase italic">{studentInfo?.institution || "Not Specified"}</p>
                                     </div>
                                 </div>
                                 {/* NEW: Preferred Tutor/Student Gender */}
-                                <div className="flex items-center gap-4 p-6 bg-slate-50 rounded-2xl">
+                                <div className="flex items-center gap-4 p-6 bg-base-200 rounded-2xl transition-colors duration-300">
                                     <div className="w-12 h-12 bg-purple-600 text-white rounded-xl flex items-center justify-center shadow-lg"><FaVenusMars size={20}/></div>
                                     <div>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase">Gender Preference</p>
-                                        <p className="font-black text-slate-800 text-lg uppercase italic">{studentInfo?.gender || "Any"}</p>
+                                        <p className="text-[10px] font-black text-base-content/40 uppercase">Gender Preference</p>
+                                        <p className="font-black text-base-content/80 text-lg uppercase italic">{studentInfo?.gender || "Any"}</p>
                                     </div>
                                 </div>
                             </div>
@@ -138,13 +138,13 @@ const TuitionsDetails = () => {
 
                     {/* Right Side: Action Card & Student Profile */}
                     <div className="lg:col-span-1 space-y-6">
-                        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
-                            <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-6">Posted By Student</h4>
+                        <div className="bg-base-100 rounded-[2.5rem] p-8 border border-base-300 shadow-xl transition-colors duration-300">
+                            <h4 className="text-[10px] font-black uppercase text-base-content/40 tracking-widest mb-6">Posted By Student</h4>
                             
                             <div className="flex items-center gap-4 group">
                                 <div className="relative">
                                     {studentInfo?.image ? (
-                                        <img src={studentInfo?.image} alt="student" className="w-16 h-16 rounded-2xl object-cover ring-4 ring-slate-50 group-hover:ring-orange-100 transition-all shadow-md" />
+                                        <img src={studentInfo?.image} alt="student" className="w-16 h-16 rounded-2xl object-cover ring-4 ring-base-200 group-hover:ring-orange-100 transition-all shadow-md" />
                                     ) : (
                                         <div className="w-16 h-16 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-md">
                                             <FaUserCircle size={40} />
@@ -153,14 +153,14 @@ const TuitionsDetails = () => {
                                     <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
                                 </div>
                                 <div className="overflow-hidden">
-                                    <h3 className="font-black text-slate-800 truncate group-hover:text-orange-600 transition-colors uppercase italic">{studentInfo?.name || "Student"}</h3>
-                                    <p className="text-[10px] font-bold text-slate-400 truncate uppercase">{tuition?.studentEmail}</p>
+                                    <h3 className="font-black text-base-content/80 truncate group-hover:text-orange-600 transition-colors uppercase italic">{studentInfo?.name || "Student"}</h3>
+                                    <p className="text-[10px] font-bold text-base-content/40 truncate uppercase">{tuition?.studentEmail}</p>
                                 </div>
                             </div>
                             
                             {/* Contact Info (if logged in) */}
                             {user && (
-                                <div className="mt-6 pt-6 border-t border-slate-100 flex items-center gap-2 text-slate-500 font-bold text-[11px] uppercase">
+                                <div className="mt-6 pt-6 border-t border-base-300 flex items-center gap-2 text-base-content/50 font-bold text-[11px] uppercase">
                                     <FaPhone className="text-orange-600" /> {studentInfo?.phone || "No phone provided"}
                                 </div>
                             )}
@@ -202,6 +202,7 @@ const TuitionsDetails = () => {
                 </div>
             </div>
         </div>
+
     );
 };
 

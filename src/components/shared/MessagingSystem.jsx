@@ -35,12 +35,12 @@ const MessagingSystem = ({ tutorId, studentId }) => {
     };
 
     return (
-        <div className="p-4 border rounded-lg bg-gray-50">
-            <div className="h-64 overflow-y-auto border-b mb-4 bg-white p-4 rounded-lg">
+        <div className="p-4 border border-base-300 rounded-lg bg-base-200 transition-colors duration-300">
+            <div className="h-64 overflow-y-auto border-b border-base-300 mb-4 bg-base-100 p-4 rounded-lg transition-colors duration-300">
                 {messages.map((msg, index) => (
-                    <div key={index} className="p-2 border-b">
-                        <p className="font-bold text-blue-600">{msg.sender}:</p>
-                        <p className="text-gray-700">{msg.text}</p>
+                    <div key={index} className="p-2 border-b border-base-300">
+                        <p className="font-bold text-primary">{msg.sender}:</p>
+                        <p className="text-base-content/80">{msg.text}</p>
                     </div>
                 ))}
             </div>
@@ -49,7 +49,7 @@ const MessagingSystem = ({ tutorId, studentId }) => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    className="input input-bordered flex-1 bg-white"
+                    className="input input-bordered flex-1 bg-base-100 text-base-content border-base-300"
                     placeholder="Type your message..."
                 />
                 <button

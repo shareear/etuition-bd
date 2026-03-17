@@ -137,7 +137,7 @@ const Register = () => {
     }
 
     return (
-        <div className="bg-white p-8 lg:p-12 rounded-3xl shadow-xl border border-white/20 max-w-md lg:max-w-5xl mx-auto flex flex-col md:flex-row items-start gap-10">
+        <div className="bg-base-100 p-8 lg:p-12 rounded-3xl shadow-xl border border-base-300 max-w-md lg:max-w-5xl mx-auto flex flex-col md:flex-row items-start gap-10 mt-10 transition-colors duration-300">
             
             {/* Left Side: Animation */}
             <div className="md:w-1/2 flex justify-center sticky top-0 lg:flex">
@@ -149,13 +149,13 @@ const Register = () => {
             {/* Right Side: Form Content */}
             <div className="md:w-1/2 w-full">
                 {/* Role Toggle */}
-                <div className="flex bg-slate-100 p-1 rounded-xl mb-6 relative w-64 shadow-inner">
+                <div className="flex bg-base-200 p-1 rounded-xl mb-6 relative w-64 shadow-inner border border-base-300">
                     <motion.div 
                         animate={{ x: userType === 'tutor' ? 0 : '100%' }}
                         className="absolute top-1 left-1 w-[calc(50%-4px)] h-[calc(100%-8px)] bg-primary rounded-lg shadow-md"
                     />
-                    <button type="button" onClick={() => handleTypeSwitch('tutor')} className={`relative flex-1 py-2 z-10 font-bold text-xs transition-colors ${userType === 'tutor' ? 'text-white' : 'text-slate-500'}`}>Tutor</button>
-                    <button type="button" onClick={() => handleTypeSwitch('student')} className={`relative flex-1 py-2 z-10 font-bold text-xs transition-colors ${userType === 'student' ? 'text-white' : 'text-slate-500'}`}>Student</button>
+                    <button type="button" onClick={() => handleTypeSwitch('tutor')} className={`relative flex-1 py-2 z-10 font-bold text-xs transition-colors ${userType === 'tutor' ? 'text-white' : 'text-base-content/50'}`}>Tutor</button>
+                    <button type="button" onClick={() => handleTypeSwitch('student')} className={`relative flex-1 py-2 z-10 font-bold text-xs transition-colors ${userType === 'student' ? 'text-white' : 'text-base-content/50'}`}>Student</button>
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -165,7 +165,7 @@ const Register = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                     >
-                        <h1 className="font-bold text-2xl text-primary mb-5">Register As a {userType === 'tutor' ? 'Tutor' : 'Student'}</h1>
+                        <h1 className="font-bold text-2xl text-primary mb-5 uppercase italic">Register As a <span className="text-base-content">{userType === 'tutor' ? 'Tutor' : 'Student'}</span></h1>
                         
                         <form onSubmit={handleSubmit(hadnleRegistration)} className="w-full">
                             <fieldset className="fieldset grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -175,60 +175,60 @@ const Register = () => {
                                         <button 
                                             type="button"
                                             onClick={handleGoogleRegister}
-                                            className="btn btn-outline w-full flex items-center justify-center gap-2 border-slate-200 hover:bg-slate-50 text-slate-600 font-bold"
+                                            className="btn btn-outline w-full flex items-center justify-center gap-2 border-base-300 hover:bg-base-200 text-base-content/70 font-bold"
                                         >
                                             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
                                             Continue with Google
                                         </button>
                                         
                                         <div className="relative flex items-center">
-                                            <div className="grow border-t border-slate-200"></div>
-                                            <span className="shrink mx-4 text-slate-400 text-[10px] font-bold uppercase">Or Email</span>
-                                            <div className="grow border-t border-slate-200"></div>
+                                            <div className="grow border-t border-base-300"></div>
+                                            <span className="shrink mx-4 text-base-content/20 text-[10px] font-black uppercase">Or Email</span>
+                                            <div className="grow border-t border-base-300"></div>
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Full Name */}
                                 <div className="md:col-span-2">
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Full Name</label>
-                                    <input type="text" className={`input w-full ${errors.name ? 'border-red-500' : ''}`} placeholder="Your Name" {...register("name", {required: "Name is required"})} />
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Full Name</label>
+                                    <input type="text" className={`input w-full bg-base-200 border-base-300 text-base-content ${errors.name ? 'border-red-500' : ''}`} placeholder="Your Name" {...register("name", {required: "Name is required"})} />
                                     {errors.name && <p className="text-red-500 text-[10px] mt-1 font-bold italic">*{errors.name.message}</p>}
                                 </div>
 
                                 {/* Photo */}
                                 <div className="md:col-span-2">
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Your Photo</label>
-                                    <input type="file" className={`file-input w-full ${errors.image ? 'border-red-500' : ''}`} placeholder="Your Photo" {...register("image", {required: "Photo is required"})} />
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Your Photo</label>
+                                    <input type="file" className={`file-input w-full bg-base-200 border-base-300 text-base-content ${errors.image ? 'border-red-500' : ''}`} placeholder="Your Photo" {...register("image", {required: "Photo is required"})} />
                                     {errors.image && <p className="text-red-500 text-[10px] mt-1 font-bold italic">*{errors.image.message}</p>}
                                 </div>
 
                                 {/* Email */}
                                 <div>
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Email</label>
-                                    <input type="email" className={`input w-full ${errors.email ? 'border-red-500' : ''}`} placeholder="Email" {...register("email", {required: "Email is required"})} />
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Email</label>
+                                    <input type="email" className={`input w-full bg-base-200 border-base-300 text-base-content ${errors.email ? 'border-red-500' : ''}`} placeholder="Email" {...register("email", {required: "Email is required"})} />
                                     {errors.email && <p className="text-red-500 text-[10px] mt-1 font-bold italic">*{errors.email.message}</p>}
                                 </div>
 
                                 {/* Phone */}
                                 <div>
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Phone</label>
-                                    <input type="tel" className={`input w-full ${errors.phone ? 'border-red-500' : ''}`} placeholder="Phone Number" {...register("phone", {required: "Phone is required"})} />
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Phone</label>
+                                    <input type="tel" className={`input w-full bg-base-200 border-base-300 text-base-content ${errors.phone ? 'border-red-500' : ''}`} placeholder="Phone Number" {...register("phone", {required: "Phone is required"})} />
                                     {errors.phone && <p className="text-red-500 text-[10px] mt-1 font-bold italic">*{errors.phone.message}</p>}
                                 </div>
 
                                 {/* Address */}
                                 <div className="md:col-span-2">
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Address</label>
-                                    <input type="text" className={`input w-full ${errors.address ? 'border-red-500' : ''}`} placeholder="Address" {...register("address", {required: "Address is required"})} />
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Address</label>
+                                    <input type="text" className={`input w-full bg-base-200 border-base-300 text-base-content ${errors.address ? 'border-red-500' : ''}`} placeholder="Address" {...register("address", {required: "Address is required"})} />
                                     {errors.address && <p className="text-red-500 text-[10px] mt-1 font-bold italic">*{errors.address.message}</p>}
                                 </div>
 
                                 {userType === 'tutor' ? (
                                     <>
                                         <div>
-                                            <label className="label font-bold text-xs uppercase tracking-wide">Occupation</label>
-                                            <select defaultValue="" className={`select select-bordered w-full ${errors.occupation ? 'border-red-500' : ''}`} {...register("occupation", {required: "Select occupation"})}>
+                                            <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Occupation</label>
+                                            <select defaultValue="" className={`select select-bordered w-full bg-base-200 border-base-300 text-base-content ${errors.occupation ? 'border-red-500' : ''}`} {...register("occupation", {required: "Select occupation"})}>
                                                 <option disabled value="">Pick one</option>
                                                 <option value="teacher">Teacher</option>
                                                 <option value="student">Student</option>
@@ -236,21 +236,21 @@ const Register = () => {
                                             {errors.occupation && <p className="text-red-500 text-[10px] mt-1 font-bold italic">*{errors.occupation.message}</p>}
                                         </div>
                                         <div>
-                                            <label className="label font-bold text-xs uppercase tracking-wide">Institution Name</label>
-                                            <input type="text" className={`input w-full ${errors.institution ? 'border-red-500' : ''}`} placeholder="Institution Name" {...register("institution", {required: "Institution is required"})} />
+                                            <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Institution Name</label>
+                                            <input type="text" className={`input w-full bg-base-200 border-base-300 text-base-content ${errors.institution ? 'border-red-500' : ''}`} placeholder="Institution Name" {...register("institution", {required: "Institution is required"})} />
                                             {errors.institution && <p className="text-red-500 text-[10px] mt-1 font-bold italic">*{errors.institution.message}</p>}
                                         </div>
                                     </>
                                 ) : (
                                     <>
                                         <div>
-                                            <label className="label font-bold text-xs uppercase tracking-wide">Institution Name</label>
-                                            <input type="text" className={`input w-full ${errors.institution ? 'border-red-500' : ''}`} placeholder="Institution Name" {...register("institution", {required: "Institution is required"})} />
+                                            <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Institution Name</label>
+                                            <input type="text" className={`input w-full bg-base-200 border-base-300 text-base-content ${errors.institution ? 'border-red-500' : ''}`} placeholder="Institution Name" {...register("institution", {required: "Institution is required"})} />
                                             {errors.institution && <p className="text-red-500 text-[10px] mt-1 font-bold italic">*{errors.institution.message}</p>}
                                         </div>
                                         <div>
-                                            <label className="label font-bold text-xs uppercase tracking-wide">Class</label>
-                                            <select defaultValue="" className={`select select-bordered w-full ${errors.class ? 'border-red-500' : ''}`} {...register("class", {required: "Select class"})}>
+                                            <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Class</label>
+                                            <select defaultValue="" className={`select select-bordered w-full bg-base-200 border-base-300 text-base-content ${errors.class ? 'border-red-500' : ''}`} {...register("class", {required: "Select class"})}>
                                                 <option disabled value="">Pick one</option>
                                                 <option value="9">Class 9</option>
                                                 <option value="10">Class 10</option>
@@ -262,8 +262,8 @@ const Register = () => {
                                 )}
 
                                 <div>
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Gender</label>
-                                    <select defaultValue="" className={`select select-bordered w-full ${errors.gender ? 'border-red-500' : ''}`} {...register("gender", {required: "Select gender"})}>
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Gender</label>
+                                    <select defaultValue="" className={`select select-bordered w-full bg-base-200 border-base-300 text-base-content ${errors.gender ? 'border-red-500' : ''}`} {...register("gender", {required: "Select gender"})}>
                                         <option disabled value="">Pick one</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -275,15 +275,15 @@ const Register = () => {
 
                                 {/* Password Field */}
                                 <div>
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Password</label>
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Password</label>
                                     <div className="relative">
                                         <input 
                                             type={showPass ? "text" : "password"} 
-                                            className={`input w-full pr-10 ${errors.password ? 'border-red-500' : ''}`} 
+                                            className={`input w-full pr-10 bg-base-200 border-base-300 text-base-content ${errors.password ? 'border-red-500' : ''}`} 
                                             placeholder="Password" 
                                             {...register("password", {required: "Password is required", minLength: {value: 6, message: "At least 6 chars"}})} 
                                         />
-                                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">
+                                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/30 text-lg">
                                             {showPass ? <IoMdEyeOff /> : <IoEye />}
                                         </button>
                                     </div>
@@ -292,18 +292,18 @@ const Register = () => {
 
                                 {/* Re-Password Field */}
                                 <div>
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Confirm Password</label>
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Confirm Password</label>
                                     <div className="relative">
                                         <input 
                                             type={showRePass ? "text" : "password"} 
-                                            className={`input w-full pr-10 ${errors.repassword ? 'border-red-500' : ''}`} 
+                                            className={`input w-full pr-10 bg-base-200 border-base-300 text-base-content ${errors.repassword ? 'border-red-500' : ''}`} 
                                             placeholder="Confirm Password" 
                                             {...register("repassword", {
                                                 required: "Confirm password is required",
                                                 validate: (value) => value === watch('password') || "Passwords do not match"
                                             })} 
                                         />
-                                        <button type="button" onClick={() => setShowRePass(!showRePass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">
+                                        <button type="button" onClick={() => setShowRePass(!showRePass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/30 text-lg">
                                             {showRePass ? <IoMdEyeOff /> : <IoEye />}
                                         </button>
                                     </div>
@@ -312,8 +312,8 @@ const Register = () => {
 
                                 <button type="submit" className="btn btn-primary mt-6 md:col-span-2 w-full uppercase font-black">Submit & Register</button>
                             </fieldset>
-                            <div>
-                                <p>Don't have and Account Please <NavLink to="/login" state={location.state}><span className="text-primary font-bold text-[15px]">Log In</span></NavLink></p>
+                            <div className="mt-4">
+                                <p className="text-base-content/60">Already have an Account? <NavLink to="/login" state={location.state}><span className="text-primary font-black text-[15px] uppercase italic">Log In</span></NavLink></p>
                             </div>
                         </form>
                     </motion.div>

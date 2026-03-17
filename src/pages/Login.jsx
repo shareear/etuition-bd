@@ -123,7 +123,7 @@ const Login = () => {
     };
 
     return (
-        <div className="bg-white p-8 lg:p-12 rounded-3xl shadow-xl border border-white/20 max-w-md lg:max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 mt-10">
+        <div className="bg-base-100 p-8 lg:p-12 rounded-3xl shadow-xl border border-base-300 max-w-md lg:max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 mt-10 transition-colors duration-300">
             
             <div className="md:w-1/2 justify-center hidden lg:flex">
                 <div className="w-full max-w-sm">
@@ -133,7 +133,7 @@ const Login = () => {
 
             <div className="md:w-1/2 w-full">
                 
-                <div className="flex bg-slate-100 p-1 rounded-xl mb-6 relative w-full shadow-inner overflow-hidden">
+                <div className="flex bg-base-200 p-1 rounded-xl mb-6 relative w-full shadow-inner overflow-hidden border border-base-300">
                     <motion.div 
                         animate={{ 
                             x: userType === 'tutor' ? 0 : userType === 'student' ? '100%' : '200%' 
@@ -141,9 +141,9 @@ const Login = () => {
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         className="absolute top-1 left-1 w-[calc(33.33%-4px)] h-[calc(100%-8px)] bg-primary rounded-lg shadow-md"
                     />
-                    <button type="button" onClick={() => handleToggle('tutor')} className={`relative flex-1 py-2 z-10 font-bold text-[10px] uppercase transition-colors ${userType === 'tutor' ? 'text-white' : 'text-slate-500'}`}>Tutor</button>
-                    <button type="button" onClick={() => handleToggle('student')} className={`relative flex-1 py-2 z-10 font-bold text-[10px] uppercase transition-colors ${userType === 'student' ? 'text-white' : 'text-slate-500'}`}>Student</button>
-                    <button type="button" onClick={() => handleToggle('admin')} className={`relative flex-1 py-2 z-10 font-bold text-[10px] uppercase transition-colors ${userType === 'admin' ? 'text-white' : 'text-slate-500'}`}>Admin</button>
+                    <button type="button" onClick={() => handleToggle('tutor')} className={`relative flex-1 py-2 z-10 font-bold text-[10px] uppercase transition-colors ${userType === 'tutor' ? 'text-white' : 'text-base-content/50'}`}>Tutor</button>
+                    <button type="button" onClick={() => handleToggle('student')} className={`relative flex-1 py-2 z-10 font-bold text-[10px] uppercase transition-colors ${userType === 'student' ? 'text-white' : 'text-base-content/50'}`}>Student</button>
+                    <button type="button" onClick={() => handleToggle('admin')} className={`relative flex-1 py-2 z-10 font-bold text-[10px] uppercase transition-colors ${userType === 'admin' ? 'text-white' : 'text-base-content/50'}`}>Admin</button>
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -153,41 +153,41 @@ const Login = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                     >
-                        <h1 className="font-bold text-2xl text-primary mb-5 uppercase italic">Login As a <span className='text-slate-800'>{userType}</span></h1>
+                        <h1 className="font-bold text-2xl text-primary mb-5 uppercase italic">Login As a <span className='text-base-content'>{userType}</span></h1>
                         
                         <form onSubmit={handleSubmit(hadnleLogin)} className="w-full">
                             <fieldset className="fieldset flex flex-col gap-4">
                                 
                                 {userType === 'student' && (
                                     <div className="space-y-4 mb-2">
-                                        <button onClick={handleGoogleLogin} type="button" className="btn btn-outline w-full flex items-center justify-center gap-2 border-slate-200">
+                                        <button onClick={handleGoogleLogin} type="button" className="btn btn-outline w-full flex items-center justify-center gap-2 border-base-300">
                                             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
                                             Continue with Google
                                         </button>
-                                        <div className="divider text-[10px] uppercase font-bold text-slate-400">Or Email</div>
+                                        <div className="divider text-[10px] uppercase font-bold text-base-content/20 font-black">Or Email</div>
                                     </div>
                                 )}
 
                                 <div>
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Email</label>
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Email</label>
                                     <input 
                                         type="email" 
-                                        className={`input w-full ${errors.email ? 'border-red-500' : ''}`} 
+                                        className={`input w-full bg-base-200 border-base-300 text-base-content ${errors.email ? 'border-red-500' : ''}`} 
                                         placeholder="Enter your email" 
                                         {...register("email", { required: "Email is required" })} 
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="label font-bold text-xs uppercase tracking-wide">Password</label>
+                                    <label className="label font-bold text-xs uppercase tracking-wide text-base-content/60">Password</label>
                                     <div className="relative">
                                         <input 
                                             type={eye ? "text" : "password"} 
-                                            className={`input w-full pr-10 ${errors.password ? 'border-red-500' : ''}`} 
+                                            className={`input w-full pr-10 bg-base-200 border-base-300 text-base-content ${errors.password ? 'border-red-500' : ''}`} 
                                             placeholder="Enter password" 
                                             {...register("password", { required: "Password is required" })} 
                                         />
-                                        <button type="button" onClick={handleEye} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-xl">
+                                        <button type="button" onClick={handleEye} className="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/30 text-xl">
                                             {eye ? <IoMdEyeOff /> : <IoEye />}
                                         </button>
                                     </div>
@@ -212,7 +212,7 @@ const Login = () => {
 
                         {userType !== 'admin' && (
                             <div className="mt-4">
-                                <p>Don't have an account? <NavLink to="/register" state={{ from }}><span className="text-primary font-bold text-[15px]">Register</span></NavLink></p>
+                                <p className="text-base-content/60">Don't have an account? <NavLink to="/register" state={{ from }}><span className="text-primary font-black text-[15px] uppercase italic">Register</span></NavLink></p>
                             </div>
                         )}
                     </motion.div>
@@ -220,17 +220,17 @@ const Login = () => {
             </div>
 
             <dialog id="forgot_password_modal" className="modal modal-bottom sm:modal-middle">
-                <div className="modal-box bg-white rounded-2xl">
+                <div className="modal-box bg-base-100 rounded-2xl border border-base-300">
                     <h3 className="font-black text-xl text-primary uppercase italic">Reset Password</h3>
-                    <p className="py-4 text-slate-500 text-sm">Enter your account email address and we'll send you a link to reset your password.</p>
+                    <p className="py-4 text-base-content/60 text-sm">Enter your account email address and we'll send you a link to reset your password.</p>
                     <div className="form-control">
                         <label className="label">
-                            <span className="label-text font-bold text-xs uppercase">Your Email</span>
+                            <span className="label-text font-bold text-xs uppercase text-base-content/60">Your Email</span>
                         </label>
                         <input 
                             type="email" 
                             placeholder="email@example.com" 
-                            className="input input-bordered w-full" 
+                            className="input input-bordered w-full bg-base-200 border-base-300 text-base-content" 
                             value={forgotEmail}
                             onChange={(e) => setForgotEmail(e.target.value)}
                             required
@@ -250,6 +250,7 @@ const Login = () => {
                 </div>
             </dialog>
         </div>
+
     );
 };
 

@@ -40,13 +40,13 @@ const FeaturedTuitions = () => {
     );
 
     return (
-        <section className="py-20 bg-slate-50">
+        <section className="py-20 bg-base-200 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 py-5">
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-black italic uppercase">
+                    <h2 className="text-4xl font-black italic uppercase text-base-content">
                         Latest <span className="text-orange-600">Tuition</span> Jobs
                     </h2>
-                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mt-2">
+                    <p className="text-base-content/60 font-bold uppercase tracking-widest text-xs mt-2">
                         New opportunities added recently
                     </p>
                 </div>
@@ -79,12 +79,13 @@ const FeaturedTuitions = () => {
                         ))}
                     </Swiper>
                 ) : (
-                    <div className="text-center text-slate-400 py-10 bg-white rounded-4xl border-2 border-dashed border-slate-200">
+                    <div className="text-center text-base-content/40 py-10 bg-base-100 rounded-4xl border-2 border-dashed border-base-300">
                         <p className="font-medium">No approved tuition jobs found in the database.</p>
                     </div>
                 )}
             </div>
         </section>
+
     );
 };
 

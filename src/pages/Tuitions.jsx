@@ -5,20 +5,23 @@ import useAxios from '../hooks/useAxios';
 
 const AllTuitions = () => {
     const [tuitions, setTuitions] = useState([]);
-    const [filteredTuitions, setFilteredTuitions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchText, setSearchText] = useState("");
+    const [subject, setSubject] = useState("");
+    const [location, setLocation] = useState("");
     
     const axiosPublic = useAxios(); 
 
     useEffect(() => {
-        // FIX: Changed '/tution' to '/tuitions' to match the backend route
-        // Your backend logic: if no email is provided, it returns only { status: 'approved' }
-        axiosPublic.get('/tuitions')
+        setLoading(true);
+        // Using database search API with query parameters
+        const params = new URLSearchParams();
+        if (subject) params.append('subject', subject);
+        if (location) params.append('location', location);
+
+        axiosPublic.get(`/tuitions?${params.toString()}`)
             .then(res => {
                 if (res.data && Array.isArray(res.data)) {
                     setTuitions(res.data);
-                    setFilteredTuitions(res.data);
                 }
             })
             .catch(err => {
@@ -27,28 +30,16 @@ const AllTuitions = () => {
             .finally(() => {
                 setLoading(false);
             });
-    }, [axiosPublic]);
-
-    const handleSearch = (e) => {
-        const value = e.target.value.toLowerCase();
-        setSearchText(value);
-
-        const filtered = tuitions.filter(tuition => 
-            tuition.subject?.toLowerCase().includes(value) || 
-            tuition.location?.toLowerCase().includes(value) ||
-            tuition.class?.toLowerCase().includes(value)
-        );
-        setFilteredTuitions(filtered);
-    };
+    }, [axiosPublic, subject, location]);
 
     if (loading) return (
-        <div className="flex justify-center items-center min-h-screen">
+        <div className="flex justify-center items-center min-h-screen bg-base-100">
             <span className="loading loading-spinner loading-lg text-orange-600"></span>
         </div>
     );
 
     return (
-        <div className="bg-slate-50 min-h-screen pb-20 pt-24 lg:pt-32">
+        <div className="bg-base-200 min-h-screen pb-20 pt-24 lg:pt-32 transition-colors duration-300">
             
             {/* Header Section */}
             <div className="max-w-7xl mx-auto px-4 mb-10">
@@ -64,17 +55,29 @@ const AllTuitions = () => {
                     <div className="absolute top-0 right-0 w-64 h-64 bg-orange-600/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
                 </div>
 
-                {/* Search Bar */}
-                <div className="relative max-w-2xl mx-auto -mt-10 z-20 px-4">
-                    <div className="relative group">
-                        <input 
-                            type="text" 
-                            value={searchText}
-                            onChange={handleSearch}
-                            placeholder="Search by Subject, Location, or Class..." 
-                            className="input w-full h-20 rounded-2xl pl-16 pr-6 shadow-2xl border-none text-lg font-medium focus:ring-4 focus:ring-orange-500/20 transition-all outline-none"
-                        />
-                        <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-orange-600 text-2xl transition-transform group-focus-within:scale-110" />
+                {/* Search Bar with 2 Fields (Subject & Location) */}
+                <div className="relative max-w-4xl mx-auto -mt-10 z-20 px-4">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <div className="relative flex-1 group">
+                            <input 
+                                type="text" 
+                                value={subject}
+                                onChange={(e) => setSubject(e.target.value)}
+                                placeholder="Search by Subject..." 
+                                className="input w-full h-20 rounded-2xl pl-16 pr-6 shadow-2xl border-none text-lg font-medium focus:ring-4 focus:ring-orange-500/20 transition-all outline-none bg-base-100 text-base-content"
+                            />
+                            <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-orange-600 text-2xl transition-transform group-focus-within:scale-110" />
+                        </div>
+                        <div className="relative flex-1 group">
+                            <input 
+                                type="text" 
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                placeholder="Search by Location..." 
+                                className="input w-full h-20 rounded-2xl pl-16 pr-6 shadow-2xl border-none text-lg font-medium focus:ring-4 focus:ring-orange-500/20 transition-all outline-none bg-base-100 text-base-content"
+                            />
+                            <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-orange-600 text-2xl transition-transform group-focus-within:scale-110" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -82,20 +85,20 @@ const AllTuitions = () => {
             {/* Content Section */}
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex justify-between items-center mb-8 px-2">
-                    <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">
-                        Showing {filteredTuitions.length} Results
+                    <p className="text-base-content/60 font-bold uppercase text-xs tracking-widest">
+                        Showing {tuitions.length} Results
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredTuitions.length > 0 ? (
-                        filteredTuitions.map(tuition => (
+                    {tuitions.length > 0 ? (
+                        tuitions.map(tuition => (
                             <TuitionCard key={tuition._id} tuition={tuition} />
                         ))
                     ) : (
-                        <div className="col-span-full text-center py-24 bg-white rounded-[3rem] border-4 border-dashed border-slate-100">
-                            <h3 className="text-2xl font-black text-slate-300 uppercase italic">No Matches Found</h3>
-                            <p className="text-slate-400 text-sm mt-2">Try searching for something else!</p>
+                        <div className="col-span-full text-center py-24 bg-base-100 rounded-[3rem] border-4 border-dashed border-base-300">
+                            <h3 className="text-2xl font-black text-base-content/30 uppercase italic">No Matches Found</h3>
+                            <p className="text-base-content/40 text-sm mt-2">Try searching for something else!</p>
                         </div>
                     )}
                 </div>
@@ -103,5 +106,6 @@ const AllTuitions = () => {
         </div>
     );
 };
+
 
 export default AllTuitions;

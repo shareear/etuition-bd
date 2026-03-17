@@ -20,9 +20,9 @@ const DashboardLayout = () => {
     }, [user]);
 
     return (
-        <div className="flex min-h-screen bg-slate-50 font-sans">
+        <div className="flex min-h-screen bg-base-200 font-sans transition-colors duration-300">
             {/* Sidebar - w-20 on mobile, w-72 on desktop */}
-            <div className="w-20 lg:w-72 bg-slate-900 text-white p-4 lg:p-6 shadow-2xl transition-all duration-300 flex flex-col items-center lg:items-stretch shrink-0">
+            <div className="w-20 lg:w-72 bg-base-300 text-base-content p-4 lg:p-6 shadow-2xl transition-all duration-300 flex flex-col items-center lg:items-stretch shrink-0">
                 
                 {/* Logo Section - Now using shared component */}
                 <div className="mb-10 lg:px-2 flex justify-center lg:justify-start overflow-hidden">

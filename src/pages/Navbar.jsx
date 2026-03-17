@@ -2,13 +2,15 @@ import React from 'react';
 import Logo from '../components/shared/Logo';
 import { NavLink, useNavigate } from 'react-router';
 // Importing icons for mobile view
-import { FaSignInAlt, FaUserPlus } from 'react-icons/fa';
 import useAuth from '../hooks/useAuth';
 import toast from 'react-hot-toast';
+import { useTheme } from '../providers/ThemeProvider';
+import { FaMoon, FaSun, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
 
 const Navbar = () => {
     const { user, signOutUser } = useAuth();
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
     // console.log(user);
     // NavLink items with active state styling
     const links = <>
@@ -61,7 +63,13 @@ const Navbar = () => {
                         </ul>
                     </div>
 
-                    <div className="navbar-end gap-3">
+                    <div className="navbar-end gap-3 text-white">
+                        <button 
+                            onClick={toggleTheme} 
+                            className="btn btn-ghost btn-circle text-xl hover:bg-white/10"
+                        >
+                            {theme === 'light' ? <FaMoon /> : <FaSun className="text-yellow-400" />}
+                        </button>
                         {user ? (
                             /* User Present: Show Avatar Dropdown */
                             <div className="dropdown dropdown-end">

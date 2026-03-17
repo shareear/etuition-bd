@@ -31,12 +31,12 @@ const NewStudents = () => {
     if (loading || students.length === 0) return null;
 
     return (
-        <section className="py-24 bg-white overflow-hidden">
+        <section className="py-24 bg-base-100 transition-colors duration-300 overflow-hidden">
             <div className="max-w-7xl mx-auto px-4">
                 
                 {/* Header Section */}
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-black text-slate-800 italic uppercase">
+                    <h2 className="text-4xl font-black text-base-content italic uppercase">
                         Our Growing <span className="text-blue-600">Student</span> Community
                     </h2>
                     <div className="w-20 h-1.5 bg-blue-600 mx-auto mt-4 rounded-full"></div>
@@ -62,10 +62,10 @@ const NewStudents = () => {
                 >
                     {students.map((student) => (
                         <SwiperSlide key={student._id}>
-                            <div className="bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100 flex flex-col items-center text-center transition-all duration-500 hover:shadow-xl hover:bg-white border-b-4 hover:border-b-blue-600">
+                            <div className="bg-base-200 rounded-[2.5rem] p-8 border border-base-300 flex flex-col items-center text-center transition-all duration-500 hover:shadow-xl hover:bg-base-100 border-b-4 hover:border-b-blue-600">
                                 
                                 {/* Large Avatar */}
-                                <div className="w-24 h-24 rounded-4xl overflow-hidden mb-6 ring-4 ring-blue-50 shadow-inner">
+                                <div className="w-24 h-24 rounded-4xl overflow-hidden mb-6 ring-4 ring-blue-50/10 shadow-inner">
                                     <img 
                                         src={student.image || student.photoURL || "https://i.ibb.co/5GzXkwq/user.png"} 
                                         className="w-full h-full object-cover"
@@ -74,7 +74,7 @@ const NewStudents = () => {
                                 </div>
 
                                 {/* Identity */}
-                                <h4 className="text-lg font-black text-slate-800 italic uppercase truncate w-full">
+                                <h4 className="text-lg font-black text-base-content italic uppercase truncate w-full">
                                     {student.name}
                                 </h4>
                                 
@@ -86,7 +86,7 @@ const NewStudents = () => {
                                 </div>
 
                                 {/* Minimal Location Info */}
-                                <div className="flex items-center gap-1.5 text-slate-400">
+                                <div className="flex items-center gap-1.5 text-base-content/40">
                                     <FaMapMarkerAlt size={10} />
                                     <span className="text-[10px] font-bold uppercase tracking-tighter">
                                         {student.address?.split(',')[0] || "Bangladesh"}
@@ -97,6 +97,7 @@ const NewStudents = () => {
                     ))}
                 </Swiper>
             </div>
+
 
             {/* Linear motion styling */}
             <style jsx global>{`

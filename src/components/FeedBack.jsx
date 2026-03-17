@@ -40,9 +40,9 @@ const FeedBack = () => {
     if (feedBacks.length === 0) return null;
 
     return (
-        <section className="py-20 bg-white overflow-hidden md:max-w-7xl mx-auto">
+        <section className="py-20 bg-base-100 transition-colors duration-300 overflow-hidden md:max-w-7xl mx-auto">
             <div className="max-w-7xl mx-auto px-4 mb-12 text-center">
-                <h2 className="text-4xl font-black uppercase italic text-slate-800">
+                <h2 className="text-4xl font-black uppercase italic text-base-content">
                     Client <span className="text-orange-600">Testimonials</span>
                 </h2>
                 <div className="w-24 h-1 bg-orange-500 mx-auto mt-4 rounded-full"></div>
@@ -72,7 +72,7 @@ const FeedBack = () => {
             >
                 {feedBacks.map((feed, index) => (
                     <SwiperSlide key={index}>
-                        <div className="bg-slate-50 p-6 rounded-4xl border border-slate-100 h-full flex flex-col hover:bg-white hover:shadow-xl hover:border-orange-100 transition-all duration-500 group">
+                        <div className="bg-base-200 p-6 rounded-4xl border border-base-300 h-full flex flex-col hover:bg-base-100 hover:shadow-xl hover:border-orange-100 transition-all duration-500 group">
 
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex gap-0.5">
@@ -80,19 +80,19 @@ const FeedBack = () => {
                                         <FaStar key={i} className="text-orange-400 text-xs" />
                                     ))}
                                 </div>
-                                <FaQuoteLeft className="text-slate-200 group-hover:text-orange-200 transition-colors text-2xl" />
+                                <FaQuoteLeft className="text-base-content/10 group-hover:text-orange-200 transition-colors text-2xl" />
                             </div>
 
-                            <p className="text-slate-600 text-sm leading-relaxed italic mb-8 grow">
+                            <p className="text-base-content/70 text-sm leading-relaxed italic mb-8 grow">
                                 {feed.feedback}
                             </p>
 
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-orange-200 overflow-hidden ring-2 ring-white shadow-md">
+                                <div className="w-10 h-10 rounded-full bg-orange-200/20 overflow-hidden ring-2 ring-base-100 shadow-md">
                                     <img src={feed.image} alt="user" className="w-full h-full object-cover" />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-bold text-slate-800">{feed.name}</h4>
+                                    <h4 className="text-sm font-bold text-base-content">{feed.name}</h4>
                                     <p className="text-[10px] font-bold text-orange-500 uppercase">{feed.role}</p>
                                 </div>
                             </div>
@@ -100,6 +100,7 @@ const FeedBack = () => {
                     </SwiperSlide>
                 ))}
             </Swiper>
+
 
             {/* Crucial for Marquee effect: Overriding Swiper transition to be linear */}
             <style jsx global>{`

@@ -35,7 +35,7 @@ const HowItWorks = () => {
     ];
 
     return (
-        <section className="bg-slate-50 py-24 px-6 overflow-hidden">
+        <section className="bg-base-200 py-24 px-6 overflow-hidden transition-colors duration-300">
             <div className="max-w-7xl mx-auto space-y-32">
                 
                 {/* --- SECTION 1: HOW IT WORKS --- */}
@@ -45,17 +45,17 @@ const HowItWorks = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 className="text-4xl font-extrabold text-slate-900">
+                        <h2 className="text-4xl font-extrabold text-base-content">
                             How the <span className="text-orange-600">Platform</span> Works
                         </h2>
-                        <p className="text-slate-500 mt-4 max-w-xl mx-auto italic">
+                        <p className="text-base-content/60 mt-4 max-w-xl mx-auto italic">
                             Simple, fast, and transparent process for everyone.
                         </p>
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         {/* Connecting Line (Desktop Only) */}
-                        <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -z-10"></div>
+                        <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-base-300 -z-10"></div>
 
                         {steps.map((step, index) => (
                             <motion.div
@@ -64,13 +64,13 @@ const HowItWorks = () => {
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.2 }}
                                 viewport={{ once: true }}
-                                className="bg-white p-10 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all group"
+                                className="bg-base-100 p-10 rounded-3xl shadow-sm border border-base-300 hover:shadow-xl transition-all group"
                             >
                                 <div className={`w-20 h-20 ${step.color} rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300`}>
                                     {step.icon}
                                 </div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-4">{step.title}</h3>
-                                <p className="text-slate-500 leading-relaxed">{step.desc}</p>
+                                <h3 className="text-2xl font-bold text-base-content mb-4">{step.title}</h3>
+                                <p className="text-base-content/70 leading-relaxed">{step.desc}</p>
                             </motion.div>
                         ))}
                     </div>
@@ -84,23 +84,23 @@ const HowItWorks = () => {
                         viewport={{ once: true }}
                         className="space-y-8"
                     >
-                        <h2 className="text-4xl font-extrabold text-slate-900 leading-tight">
+                        <h2 className="text-4xl font-extrabold text-base-content leading-tight">
                             Why Thousands of Parents <br /> 
-                            <span className="text-orange-600 underline underline-offset-8 decoration-orange-200">Trust eTuitionBd</span>
+                            <span className="text-orange-600 underline underline-offset-8 decoration-orange-200/30">Trust eTuitionBd</span>
                         </h2>
-                        <p className="text-slate-600 text-lg">
+                        <p className="text-base-content/80 text-lg">
                             We aren't just a tuition media; we are a community dedicated to educational success in Bangladesh.
                         </p>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {features.map((f, i) => (
                                 <div key={i} className="flex items-start gap-4">
-                                    <div className="mt-1 text-orange-600 bg-orange-50 p-2 rounded-lg">
+                                    <div className="mt-1 text-orange-600 bg-orange-50/10 p-2 rounded-lg">
                                         {f.icon}
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-slate-800">{f.title}</h4>
-                                        <p className="text-sm text-slate-500">{f.desc}</p>
+                                        <h4 className="font-bold text-base-content">{f.title}</h4>
+                                        <p className="text-sm text-base-content/60">{f.desc}</p>
                                     </div>
                                 </div>
                             ))}
@@ -128,14 +128,15 @@ const HowItWorks = () => {
                             </div>
                         </div>
                         {/* Floating Badge */}
-                        <div className="absolute -top-6 -right-6 bg-white p-6 rounded-2xl shadow-2xl border border-slate-100 hidden md:block">
+                        <div className="absolute -top-6 -right-6 bg-base-100 p-6 rounded-2xl shadow-2xl border border-base-300 hidden md:block">
                             <p className="text-orange-600 font-black text-2xl">BD #1</p>
-                            <p className="text-xs text-slate-400 font-bold">Tuition Network</p>
+                            <p className="text-xs text-base-content/40 font-bold">Tuition Network</p>
                         </div>
                     </motion.div>
                 </div>
             </div>
         </section>
+
     );
 };
 

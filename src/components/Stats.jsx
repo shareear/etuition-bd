@@ -31,7 +31,7 @@ const StatsCounter = () => {
     ];
 
     return (
-        <div className="py-20 bg-slate-50">
+        <div className="py-20 bg-base-200 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-6">
                 <InView triggerOnce threshold={0.2}>
                     {({ inView, ref }) => (
@@ -42,17 +42,17 @@ const StatsCounter = () => {
                                     initial={{ opacity: 0, y: 30 }}
                                     animate={inView ? { opacity: 1, y: 0 } : {}}
                                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                                    className={`relative bg-white p-8 rounded-3xl shadow-xl ${stat.shadow} border border-slate-100 flex flex-col items-center text-center overflow-hidden`}
+                                    className={`relative bg-base-100 p-8 rounded-3xl shadow-xl ${stat.shadow} border border-base-300 flex flex-col items-center text-center overflow-hidden`}
                                 >
                                     <div className={`w-16 h-16 rounded-2xl bg-linear-to-br ${stat.color} text-white flex items-center justify-center text-3xl mb-6 shadow-lg`}>
                                         {stat.icon}
                                     </div>
 
-                                    <div className="text-4xl font-black text-slate-800 mb-2">
+                                    <div className="text-4xl font-black text-base-content mb-2">
                                         {inView ? <AnimatedNumber value={stat.value} suffix={stat.suffix || "+"} /> : "0"}
                                     </div>
 
-                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">
+                                    <p className="text-base-content/60 font-bold uppercase tracking-widest text-xs">
                                         {stat.label}
                                     </p>
                                 </motion.div>
@@ -62,6 +62,7 @@ const StatsCounter = () => {
                 </InView>
             </div>
         </div>
+
     );
 };
 
