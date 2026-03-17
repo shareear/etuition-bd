@@ -9,7 +9,7 @@ const Tutors = () => {
     const [tutors, setTutors] = useState([]);
     const [filteredTutors, setFilteredTutors] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+
     // Split search states for better filtering
     const [nameQuery, setNameQuery] = useState("");
     const [subjectQuery, setSubjectQuery] = useState("");
@@ -37,7 +37,7 @@ const Tutors = () => {
             const result = tutors.filter(tutor => {
                 const nameMatch = (tutor.name || "").toLowerCase().includes(nameQuery.toLowerCase());
                 const subjectMatch = (tutor.subject || "").toLowerCase().includes(subjectQuery.toLowerCase());
-                
+
                 // Budget filtering
                 const tutorSalary = parseInt(tutor.expectedSalary || 0);
                 const filterSalary = maxBudget === "" ? Infinity : parseInt(maxBudget);
@@ -62,11 +62,11 @@ const Tutors = () => {
 
     return (
         <div className="bg-base-200 min-h-screen pt-28 pb-20 px-4 transition-colors duration-300">
-            
+
             {/* --- Header & Filter Section --- */}
             <div className="max-w-7xl mx-auto mb-12">
                 <div className="text-center mb-10">
-                    <motion.h1 
+                    <motion.h1
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="text-4xl md:text-6xl font-black text-base-content uppercase italic mb-4"
@@ -82,9 +82,9 @@ const Tutors = () => {
                 <div className="bg-base-100 p-4 md:p-6 rounded-[2.5rem] shadow-xl flex flex-col lg:flex-row gap-4 items-center border border-base-300">
                     <div className="relative flex-1 w-full">
                         <FaUser className="absolute left-6 top-1/2 -translate-y-1/2 text-orange-600" />
-                        <input 
-                            type="text" 
-                            placeholder="Tutor Name..." 
+                        <input
+                            type="text"
+                            placeholder="Tutor Name..."
                             className="input w-full h-16 pl-14 bg-base-200 border-none rounded-2xl font-bold text-base-content focus:ring-2 focus:ring-orange-500/20 transition-all outline-none"
                             value={nameQuery}
                             onChange={(e) => setNameQuery(e.target.value)}
@@ -92,9 +92,9 @@ const Tutors = () => {
                     </div>
                     <div className="relative flex-1 w-full">
                         <FaGraduationCap className="absolute left-6 top-1/2 -translate-y-1/2 text-orange-600" />
-                        <input 
-                            type="text" 
-                            placeholder="Subject..." 
+                        <input
+                            type="text"
+                            placeholder="Subject..."
                             className="input w-full h-16 pl-14 bg-base-200 border-none rounded-2xl font-bold text-base-content focus:ring-2 focus:ring-orange-500/20 transition-all outline-none"
                             value={subjectQuery}
                             onChange={(e) => setSubjectQuery(e.target.value)}
@@ -102,9 +102,9 @@ const Tutors = () => {
                     </div>
                     <div className="relative w-full lg:w-48">
                         <FaMoneyBillWave className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-600" />
-                        <input 
-                            type="number" 
-                            placeholder="Max BDT" 
+                        <input
+                            type="number"
+                            placeholder="Max BDT"
                             className="input w-full h-16 pl-14 bg-base-200 border-none rounded-2xl font-bold text-base-content focus:ring-2 focus:ring-orange-500/20 transition-all outline-none"
                             value={maxBudget}
                             onChange={(e) => setMaxBudget(e.target.value)}
@@ -117,7 +117,7 @@ const Tutors = () => {
             <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <AnimatePresence mode='popLayout'>
                     {filteredTutors.map((tutor) => (
-                        <motion.div 
+                        <motion.div
                             layout
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -128,9 +128,9 @@ const Tutors = () => {
                         >
                             {/* Tutor Image */}
                             <div className="relative h-60 overflow-hidden bg-base-200">
-                                <img 
-                                    src={tutor.image} 
-                                    alt={tutor.name} 
+                                <img
+                                    src={tutor.image}
+                                    alt={tutor.name}
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
                                 <div className="absolute top-4 right-4 bg-base-100/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm border border-base-300">
@@ -144,18 +144,18 @@ const Tutors = () => {
                                 <h3 className="text-xl font-black text-base-content uppercase italic truncate mb-4 flex items-center gap-2">
                                     {tutor.name}
                                 </h3>
-                                
+
                                 <div className="space-y-3 mb-8 grow">
                                     <p className="text-base-content/60 font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
-                                        <FaUniversity className="text-blue-600 shrink-0" /> 
+                                        <FaUniversity className="text-blue-600 shrink-0" />
                                         <span className="truncate">{tutor.institution || "Institution N/A"}</span>
                                     </p>
                                     <p className="text-base-content/50 font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
-                                        <FaGraduationCap className="text-emerald-600 shrink-0" /> 
+                                        <FaGraduationCap className="text-emerald-600 shrink-0" />
                                         <span className="truncate">{tutor.subject || "All Subjects"}</span>
                                     </p>
                                     <p className="text-base-content/50 font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
-                                        <FaMapMarkerAlt className="text-red-500 shrink-0" /> 
+                                        <FaMapMarkerAlt className="text-red-500 shrink-0" />
                                         <span className="truncate">{tutor.location || tutor.address || "Bangladesh"}</span>
                                     </p>
                                 </div>
@@ -169,7 +169,7 @@ const Tutors = () => {
                                         </span>
                                     </div>
 
-                                    <Link 
+                                    <Link
                                         to={`/tutor-details/${tutor._id}`}
                                         className="btn btn-block bg-slate-900 hover:bg-orange-600 text-white border-none rounded-2xl h-14 uppercase font-black italic tracking-widest transition-all shadow-lg"
                                     >
@@ -184,7 +184,7 @@ const Tutors = () => {
 
             {/* --- Empty Result State --- */}
             {filteredTutors.length === 0 && (
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="max-w-7xl mx-auto text-center py-32 bg-base-100 rounded-[4rem] border-4 border-dashed border-base-300 mt-10"
@@ -194,11 +194,12 @@ const Tutors = () => {
                     </div>
                     <h3 className="text-2xl font-black text-base-content/20 uppercase italic">No Mentors Found</h3>
                     <p className="text-base-content/40 text-sm mt-2 font-medium">Try adjusting your search keywords or budget range.</p>
-                    <button 
-                        onClick={() => {setNameQuery(""); setSubjectQuery(""); setMaxBudget("");}} 
+                    <button
+                        onClick={() => { setNameQuery(""); setSubjectQuery(""); setMaxBudget(""); }}
                         className="mt-6 text-orange-600 font-black uppercase text-xs hover:underline"
                     >
                         Clear All Filters
+
                     </button>
                 </motion.div>
             )}
